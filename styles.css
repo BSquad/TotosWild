@@ -1,0 +1,84 @@
+/* --- Grundlayout --- */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f3f0e7; /* sanftes Natur-Beige */
+  color: #3a3a3a;
+  line-height: 1.6;
+}
+
+.wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* --- Header --- */
+header {
+  background: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=60')
+    center/cover no-repeat;
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 40px;
+  color: white;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 42px;
+  font-weight: 700;
+}
+
+header .subtitle {
+  font-size: 18px;
+  opacity: 0.9;
+  margin-top: 8px;
+}
+
+/* --- Kategorien --- */
+h2 {
+  margin-top: 50px;
+  font-size: 30px;
+  color: #5a4f3c; /* erdiges Braun */
+  border-bottom: 2px solid #c8b796;
+  padding-bottom: 6px;
+}
+
+/* --- Produkte --- */
+.product {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin: 15px 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border-left: 5px solid #b48b3c; /* Honig-Gold */
+}
+
+.product .name {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #4a3f2c;
+}
+
+.product .desc {
+  font-size: 15px;
+}
+
+/* --- Footer --- */
+footer {
+  text-align: center;
+  margin: 60px 0 20px;
+  color: #6b6b6b;
+  font-size: 14px;
+}
+
+footer a {
+  color: #6b6b6b;
+  text-decoration: none;
+  border-bottom: 1px dotted #6b6b6b;
+}
