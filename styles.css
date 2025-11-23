@@ -1,72 +1,89 @@
-/* --- Grundlayout --- */
+/* --- Grundlayout & Hintergrund --- */
 body {
   margin: 0;
   padding: 0;
   font-family: "Segoe UI", sans-serif;
-  background-color: #f3f0e7; /* sanftes Natur-Beige */
   color: #3a3a3a;
-  line-height: 1.6;
+  background: linear-gradient(180deg, #f8f5ec 0%, #eae4d6 100%);
+  min-height: 100vh;
 }
 
+/* Zentrierter Inhalt */
 .wrapper {
   max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
+  margin: 40px auto;
+  padding: 0 20px;
 }
 
 /* --- Header --- */
 header {
+  text-align: center;
+  padding: 60px 20px;
   background: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=60')
     center/cover no-repeat;
-  height: 280px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 40px;
   color: white;
   text-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
 header h1 {
   margin: 0;
-  font-size: 42px;
+  font-size: 48px;
   font-weight: 700;
 }
 
 header .subtitle {
-  font-size: 18px;
-  opacity: 0.9;
-  margin-top: 8px;
+  margin-top: 10px;
+  font-size: 20px;
+  opacity: 0.95;
 }
 
 /* --- Kategorien --- */
 h2 {
-  margin-top: 50px;
-  font-size: 30px;
-  color: #5a4f3c; /* erdiges Braun */
-  border-bottom: 2px solid #c8b796;
-  padding-bottom: 6px;
+  margin: 60px 0 15px;
+  font-size: 32px;
+  text-align: center;
+  color: #4b3b2a;
+  position: relative;
 }
 
-/* --- Produkte --- */
+h2::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 4px;
+  margin: 10px auto 0;
+  background-color: #c39a4b; /* Honig-Gold */
+  border-radius: 2px;
+}
+
+/* --- Produktkarten --- */
 .product {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 15px 20px;
-  margin: 15px 0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  border-left: 5px solid #b48b3c; /* Honig-Gold */
+  background-color: #ffffffee;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 15px auto;
+  max-width: 700px;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-left: 8px solid #c39a4b; /* Honig-Gold */
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.product:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
 }
 
 .product .name {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
+  color: #4b3b2a;
   margin-bottom: 6px;
-  color: #4a3f2c;
 }
 
 .product .desc {
-  font-size: 15px;
+  font-size: 16px;
+  color: #555;
 }
 
 /* --- Footer --- */
@@ -77,8 +94,30 @@ footer {
   font-size: 14px;
 }
 
-footer a {
-  color: #6b6b6b;
-  text-decoration: none;
-  border-bottom: 1px dotted #6b6b6b;
+/* --- Mobile Optimierung --- */
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 36px;
+  }
+
+  header .subtitle {
+    font-size: 16px;
+  }
+
+  h2 {
+    font-size: 26px;
+  }
+
+  .product {
+    padding: 15px;
+    margin: 12px 0;
+  }
+
+  .product .name {
+    font-size: 20px;
+  }
+
+  .product .desc {
+    font-size: 15px;
+  }
 }
