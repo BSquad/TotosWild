@@ -20,6 +20,8 @@ async function loadProducts() {
       }
       categories[p.category].push(p);
     }
+	
+	container.innerHTML = "";
 
     // Kategorien ausgeben
     for (const category in categories) {
