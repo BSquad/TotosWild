@@ -3,7 +3,7 @@ async function loadProducts() {
   const container = document.getElementById("product-container");
   
   const categoryInfo = {
-    "Honig": "Unseere kleine Hobby-Imkerei liefert Ihnen feinsten Honig aus regionaler Blütenvielfalt \n100% naturbelassen, unverfälscht und mit Liebe gemacht Ohne ZUckerzusatz - echter, reiner Bienenhonig",
+    "Honig": "Unsere kleine Hobby-Imkerei liefert Ihnen feinsten Honig aus regionaler Blütenvielfalt<br>100% naturbelassen, unverfälscht und mit Liebe gemacht Ohne Zuckerzusatz - echter, reiner Bienenhonig",
     "Wildschwein": "Nachhaltig gejagt, regional verarbeitet, höchste Qualität",
     "Reh": "Nachhaltig gejagt, regional verarbeitet, höchste Qualität"
   };
