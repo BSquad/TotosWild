@@ -1,4 +1,3 @@
-// --- JSON laden ---
 async function fetchProducts() {
   const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREBTSfAxtL3CUUCYdfq18N96hbNra9mSQP7NjkolG--a0DeveIkb0QZhtsm39yqDCAjtebofyHod42/pub?output=csv";
   const response = await fetch(url);
@@ -13,15 +12,15 @@ function parseCSV(csvText) {
 
   return lines.map(line => {
     const values = line.split(",").map(v => v.trim());
-    const obj = {};
-    headers.forEach((h, i) => {
-      obj[h] = values[i];
-    });
-    return obj;
+    return {
+      category: values[headers.indexOf("Kategorie")],
+      name: values[headers.indexOf("Name")],
+      description: values[headers.indexOf("Beschreibung")],
+      price: values[headers.indexOf("Preis")]
+    };
   });
 }
 
-// --- Produkte nach Kategorie gruppieren ---
 function groupByCategory(products) {
   const categories = {};
   for (const p of products) {
@@ -31,17 +30,15 @@ function groupByCategory(products) {
   return categories;
 }
 
-// --- Kategorie-Info erzeugen ---
 function createCategoryInfoElement(category, categoryInfo) {
   if (!categoryInfo[category]) return null;
 
   const div = document.createElement("div");
   div.className = "category-info";
-  div.textContent = categoryInfo[category]; // CSS white-space: pre-line beachten
+  div.textContent = categoryInfo[category];
   return div;
 }
 
-// --- Produktkarte erzeugen ---
 function createProductElement(product) {
   const div = document.createElement("div");
   div.className = "product";
@@ -52,7 +49,7 @@ function createProductElement(product) {
   return div;
 }
 
-// --- Kategorien anzeigen ---
+
 function renderCategories(container, categories, categoryInfo) {
   container.innerHTML = "";
 
@@ -71,8 +68,7 @@ function renderCategories(container, categories, categoryInfo) {
   }
 }
 
-// --- Hauptfunktion ---
-async function loadProducts() {
+async function createContent() {
   const container = document.getElementById("product-container");
 
   const categoryInfo = {
@@ -91,4 +87,4 @@ async function loadProducts() {
   }
 }
 
-loadProducts();
+createContent();
