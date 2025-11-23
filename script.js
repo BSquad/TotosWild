@@ -1,12 +1,12 @@
 async function fetchProducts() {
   const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREBTSfAxtL3CUUCYdfq18N96hbNra9mSQP7NjkolG--a0DeveIkb0QZhtsm39yqDCAjtebofyHod42/pub?output=tsv";
   const response = await fetch(url);
-  const csvText = await response.text();
+  const tsvText = await response.text();
 
-  return parseCSV(csvText);
+  return parseTSV(tsvText);
 }
 
-function parseCSV(csvText) {
+function parseTSV(tsvText) {
   const lines = tsvText.trim().split("\n");
   const headers = lines.shift().split("\t").map(h => h.trim());
 
