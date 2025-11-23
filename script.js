@@ -1,7 +1,21 @@
 // --- JSON laden ---
 async function fetchProducts() {
-  const response = await fetch("Produkte.json?v=" + new Date().getTime());
-  return await response.json();
+  const sheetID = "1dTOeVckrXhczMe1M2IH5WsL817teLYTqHtMI0hLQDto";
+  const url = `https://spreadsheets.google.com/feeds/list/${sheetID}/od6/public/values?alt=json`;
+
+  const response = await fetch(url);
+  const data = await response.json();
+
+  // Google Sheet JSON umwandeln in einfaches Array
+  const products = data.feed.entry.map(entry => ({
+    category: entry.gsx$Kategorie.$t,
+    name: entry.gsx$Name.$t,
+    description: entry.gsx$Beschreibung.$t,
+    price: entry.gsx$Preis.$t,
+    //image: entry.gsx$Bild
+  }));
+
+  return products;
 }
 
 // --- Produkte nach Kategorie gruppieren ---
