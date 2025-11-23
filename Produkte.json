@@ -2,21 +2,37 @@
   {
     "category": "Honig",
     "name": "Frühlingshonig",
-    "description": "Mild, hell, 500 g."
+    "description": "1 Glas (500 g)",
+	"price" : "6,50€"
   },
   {
     "category": "Honig",
     "name": "Waldhonig",
-    "description": "Kräftig, dunkel, 500 g."
+    "description": "1 Glas (500 g)",
+	"price" : "6,50€"
   },
   {
     "category": "Wildschwein",
-    "name": "Wildschwein-Bratwurst",
-    "description": "250 g."
+    "name": "Wildschweinbratwurst",
+    "description": "4 Stück 500 g",
+	"price" : "10,00€"
+  },
+  {
+    "category": "Wildschwein",
+    "name": "Wildschwein-Burgerpatties",
+    "description": "pro Stück (150 g)",
+	"price" : "3,00€"
+  },
+  {
+    "category": "Wildschwein",
+    "name": "Wildschwein-Steaks mariniert",
+    "description": "pro kg",
+	"price" : "23,00€"
   },
   {
     "category": "Reh",
-    "name": "Reh-Burger",
-    "description": "500 g."
+    "name": "Reh-Burgerpatties",
+    "description": "pro Stück (150 g)",
+	"price" : "3,00€"
   }
 ]

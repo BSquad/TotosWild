@@ -27,7 +27,7 @@ async function loadProducts() {
         div.className = "product";
         div.innerHTML = `
           <div class="name">${product.name}</div>
-          <div class="desc">${product.description}</div>
+          <div class="desc">${product.description}: ${product.price}</div>
         `;
         container.appendChild(div);
       }
