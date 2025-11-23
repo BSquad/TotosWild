@@ -80,7 +80,15 @@ h2::after {
   color: #555;
 }
 
-/* --- Footer --- */
+.category-info {
+  text-align: center;
+  font-style: italic;
+  color: #5a4f3c;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
 footer {
   text-align: center;
   margin: 60px 0 20px;
@@ -109,5 +117,9 @@ footer {
 
   .product .desc {
     font-size: 15px;
+  }
+  
+  .category-info {
+    font-size: 14px;
   }
 }
