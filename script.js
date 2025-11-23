@@ -3,13 +3,13 @@ async function loadProducts() {
   const container = document.getElementById("product-container");
   
   const categoryInfo = {
-    "Honig": "Unsere kleine Hobby-Imkerei liefert Ihnen feinsten Honig aus regionaler Blütenvielfalt<br>100% naturbelassen, unverfälscht und mit Liebe gemacht Ohne Zuckerzusatz - echter, reiner Bienenhonig",
+    "Honig": "Unsere kleine Hobby-Imkerei liefert Ihnen feinsten Honig aus regionaler Blütenvielfalt \n100% naturbelassen, unverfälscht und mit Liebe gemacht Ohne Zuckerzusatz - echter, reiner Bienenhonig",
     "Wildschwein": "Nachhaltig gejagt, regional verarbeitet, höchste Qualität",
     "Reh": "Nachhaltig gejagt, regional verarbeitet, höchste Qualität"
   };
 
   try {
-    const response = await fetch("Produkte.json");
+    const response = await fetch("Produkte.json?v=" + new Date().getTime());
     const products = await response.json();
 
     // Produkte nach Kategorien gruppieren
@@ -28,7 +28,7 @@ async function loadProducts() {
       container.appendChild(h2);
 	  
 	  if (categoryInfo[category]) {
-        const pInfo = document.createElement("p");
+        const pInfo = document.createElement("div");
         pInfo.className = "category-info";
         pInfo.textContent = categoryInfo[category];
         container.appendChild(pInfo);

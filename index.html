@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Totos Wild</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=0.0.1">
 </head>
 
 <body>
@@ -25,6 +25,22 @@
   <div class="footerText">oder 38667 Bad Harzburg möglich</div>
 </footer>
 
-<script src="script.js"></script>
+<script src="script.js?v=0.0.1"></script>
+
+<script>
+  const timestamp = new Date().getTime();
+
+  // CSS dynamisch laden
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "style.css?v=" + timestamp;
+  document.head.appendChild(link);
+
+  // JS dynamisch laden
+  const script = document.createElement("script");
+  script.src = "script.js?v=" + timestamp;
+  document.body.appendChild(script);
+</script>
+
 </body>
 </html>
