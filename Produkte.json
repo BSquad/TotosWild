@@ -1,0 +1,22 @@
+[
+  {
+    "category": "Honig",
+    "name": "Frühlingshonig",
+    "description": "Mild, hell, 500 g."
+  },
+  {
+    "category": "Honig",
+    "name": "Waldhonig",
+    "description": "Kräftig, dunkel, 500 g."
+  },
+  {
+    "category": "Wildschwein",
+    "name": "Wildschweinsalami",
+    "description": "Geräuchert, 250 g."
+  },
+  {
+    "category": "Reh",
+    "name": "Rehgulasch",
+    "description": "500 g."
+  }
+]
