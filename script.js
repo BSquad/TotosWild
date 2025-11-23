@@ -1,21 +1,24 @@
 // --- JSON laden ---
 async function fetchProducts() {
-  const sheetID = "1dTOeVckrXhczMe1M2IH5WsL817teLYTqHtMI0hLQDto";
-  const url = `https://spreadsheets.google.com/feeds/list/${sheetID}/od6/public/values?alt=json`;
-
+  const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREBTSfAxtL3CUUCYdfq18N96hbNra9mSQP7NjkolG--a0DeveIkb0QZhtsm39yqDCAjtebofyHod42/pub?output=csv";
   const response = await fetch(url);
-  const data = await response.json();
+  const csvText = await response.text();
 
-  // Google Sheet JSON umwandeln in einfaches Array
-  const products = data.feed.entry.map(entry => ({
-    category: entry.gsx$Kategorie.$t,
-    name: entry.gsx$Name.$t,
-    description: entry.gsx$Beschreibung.$t,
-    price: entry.gsx$Preis.$t,
-    //image: entry.gsx$Bild
-  }));
+  return parseCSV(csvText);
+}
 
-  return products;
+function parseCSV(csvText) {
+  const lines = csvText.trim().split("\n");
+  const headers = lines.shift().split(",").map(h => h.trim());
+
+  return lines.map(line => {
+    const values = line.split(",").map(v => v.trim());
+    const obj = {};
+    headers.forEach((h, i) => {
+      obj[h] = values[i];
+    });
+    return obj;
+  });
 }
 
 // --- Produkte nach Kategorie gruppieren ---
