@@ -4,45 +4,45 @@
   <meta charset="UTF-8">
   <title>Totos Wild</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css?v=0.0.2">
+  <!--<link rel="stylesheet" href="style.css?v=0.0.2">--> <!--TODO Nach Testen auf statisch wechseln-->
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="shortcut icon" type="image/png" href="images/favicon.png"> <!-- Optional: als Shortcut Icon für ältere Browser -->
 </head>
 
 <body>
 
-<header>
-  <h1>Toto's Wild- u. Honigspezialitäten</h1>
-</header>
+  <header>
+    <h1>Toto's Wild- u. Honigspezialitäten</h1>
+  </header>
 
-<main class="wrapper">
-  <div id="product-container"></div>
-</main>
+  <main class="wrapper">
+    <div id="product-container"></div>
+  </main>
 
-<footer>
-  <div class="footerText">Thorsten Jahn</div>
-  <div class="footerText">Telefon: 0151/40309056</div>
-  <div class="footerText">E-Mail: toto1977@web.de</div>
-  <div class="footerText">Abholung in 38315 Werlaburgdorf - Schladen</div>
-  <div class="footerText">oder 38667 Bad Harzburg möglich</div>
-</footer>
+  <footer>
+    <div class="footerText">Thorsten Jahn</div>
+    <div class="footerText">Telefon: 0151/40309056</div>
+    <div class="footerText">E-Mail: toto1977@web.de</div>
+    <div class="footerText">Abholung in 38315 Werlaburgdorf - Schladen</div>
+    <div class="footerText">oder 38667 Bad Harzburg möglich</div>
+  </footer>
 
-<script src="script.js?v=0.0.2"></script>
+  <!--<script src="script.js?v=0.0.2"></script>--> <!--TODO Nach Testen auf statisch wechseln-->
 
-<script>
-  const timestamp = new Date().getTime();
+  <script>
+    const timestamp = new Date().getTime();
 
-  // CSS dynamisch laden
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = "style.css?v=" + timestamp;
-  document.head.appendChild(link);
+    // CSS dynamisch laden
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "style.css?v=" + timestamp;
+    document.head.appendChild(link);
 
-  // JS dynamisch laden
-  const script = document.createElement("script");
-  script.src = "script.js?v=" + timestamp;
-  document.body.appendChild(script);
-</script>
+    // JS dynamisch laden
+    const script = document.createElement("script");
+    script.src = "script.js?v=" + timestamp;
+    document.body.appendChild(script);
+  </script>
 
 </body>
 </html>
