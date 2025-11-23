@@ -11,7 +11,7 @@ function parseTSV(tsvText) {
   const headers = lines.shift().split("\t").map(h => h.trim());
 
   return lines.map(line => {
-    const values = line.split(",").map(v => v.trim());
+    const values = line.split("\t").map(v => v.trim());
     return {
       category: values[headers.indexOf("Kategorie")],
       name: values[headers.indexOf("Name")],
