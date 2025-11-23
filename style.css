@@ -31,12 +31,6 @@ header h1 {
   font-weight: 700;
 }
 
-header .subtitle {
-  margin-top: 10px;
-  font-size: 20px;
-  opacity: 0.95;
-}
-
 /* --- Kategorien --- */
 h2 {
   margin: 60px 0 15px;
@@ -98,10 +92,6 @@ footer {
 @media (max-width: 600px) {
   header h1 {
     font-size: 36px;
-  }
-
-  header .subtitle {
-    font-size: 16px;
   }
 
   h2 {
