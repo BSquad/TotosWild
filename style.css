@@ -87,6 +87,7 @@ h2::after {
   margin-top: 5px;
   margin-bottom: 20px;
   font-size: 16px;
+  white-space: pre-line; /* Zeilenumbrüche (\n) werden angezeigt */
 }
 
 footer {
