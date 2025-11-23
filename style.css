@@ -19,10 +19,10 @@ body {
 header {
   text-align: center;
   padding: 60px 20px;
-  background: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=60')
-    center/cover no-repeat;
-  color: white;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  background: linear-gradient(135deg, #f8e8d0 0%, #e0d4b7 100%);
+  color: #4b3b2a;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-bottom: 2px solid #c39a4b;
 }
 
 header h1 {
