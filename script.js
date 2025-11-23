@@ -59,7 +59,7 @@ async function loadProducts() {
   const container = document.getElementById("product-container");
 
   const categoryInfo = {
-    "Honig": "Unsere kleine Hobby-Imkerei liefert Ihnen feinsten Honig aus regionaler Blütenvielfalt.\n100% naturbelassen, unverfälscht und mit Liebe gemacht.\nOhne Zuckerzusatz - echter, reiner Bienenhonig",
+    "Honig": "Unsere kleine Hobby-Imkerei liefert Ihnen feinsten Honig aus regionaler Blütenvielfalt\n100% naturbelassen, unverfälscht und mit Liebe gemacht\nOhne Zuckerzusatz - echter, reiner Bienenhonig",
     "Wildschwein": "Nachhaltig gejagt, regional verarbeitet, höchste Qualität",
     "Reh": "Nachhaltig gejagt, regional verarbeitet, höchste Qualität"
   };
@@ -69,7 +69,7 @@ async function loadProducts() {
     const categories = groupByCategory(products);
     renderCategories(container, categories, categoryInfo);
   } catch (err) {
-    container.innerHTML = "<p>Fehler beim Laden der Produkte.</p>";
+    container.innerHTML = "<p>Fehler beim Laden der Produkte</p>";
     console.error(err);
   }
 }
