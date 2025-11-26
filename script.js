@@ -16,7 +16,8 @@ function parseTSV(tsvText) {
       category: values[headers.indexOf("Kategorie")],
       name: values[headers.indexOf("Name")],
       description: values[headers.indexOf("Beschreibung")],
-      price: values[headers.indexOf("Preis")]
+      price: values[headers.indexOf("Preis")],
+      imageName: values[headers.indexOf("Bild")]
     };
   });
 }
@@ -41,10 +42,22 @@ function createCategoryInfoElement(category, categoryInfo) {
 
 function createProductElement(product) {
   const div = document.createElement("div");
+  const imageUrl = product.imageName
+    ? "images/" + product.imageName
+    : null;
   div.className = "product";
   div.innerHTML = `
-    <div class="name">${product.name}</div>
-    <div class="desc">${product.description}: ${product.price}</div>
+    <div class="product-content">
+      <div class="product-text">
+        <div class="name">${product.name}</div>
+        <div class="desc">${product.description}: ${product.price}</div>
+      </div>
+      ${
+        imageUrl
+          ? `<img class="product-img" src="${imageUrl}" alt="${product.name}">`
+          : ""
+      }
+    </div>
   `;
   return div;
 }
