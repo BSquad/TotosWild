@@ -1,12 +1,23 @@
 async function fetchProducts() {
-  const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREBTSfAxtL3CUUCYdfq18N96hbNra9mSQP7NjkolG--a0DeveIkb0QZhtsm39yqDCAjtebofyHod42/pub?output=tsv";
+  //https://docs.google.com/spreadsheets/d/1dTOeVckrXhczMe1M2IH5WsL817teLYTqHtMI0hLQDto/edit?gid=0#gid=0
+  const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREBTSfAxtL3CUUCYdfq18N96hbNra9mSQP7NjkolG--a0DeveIkb0QZhtsm39yqDCAjtebofyHod42/pub?gid=0&output=tsv";
   const response = await fetch(url);
   const tsvText = await response.text();
+  const products = parseProductsTSV(tsvText);
 
-  return parseTSV(tsvText);
+  return products;
 }
 
-function parseTSV(tsvText) {
+async function fetchCategories() {
+  const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREBTSfAxtL3CUUCYdfq18N96hbNra9mSQP7NjkolG--a0DeveIkb0QZhtsm39yqDCAjtebofyHod42/pub?gid=771625926&output=tsv";
+  const response = await fetch(url);
+  const tsvText = await response.text();
+  const categories = parseCategoriesTSV(tsvText);
+
+  return categories;
+}
+
+function parseProductsTSV(tsvText) {
   const lines = tsvText.trim().split("\n");
   const headers = lines.shift().split("\t").map(h => h.trim());
 
@@ -20,6 +31,25 @@ function parseTSV(tsvText) {
       imageName: values[headers.indexOf("Bild")]
     };
   });
+}
+
+function parseCategoriesTSV(tsvText) {
+  const lines = tsvText.trim().split("\n");
+  const headers = lines.shift().split("\t").map(h => h.trim());
+
+  const map = {};
+
+  for (const line of lines) {
+    const values = line.split("\t").map(v => v.trim());
+    const name = values[headers.indexOf("Name")];
+    const description = values[headers.indexOf("Beschreibung")];
+
+    if (name) {
+      map[name] = description;
+    }
+  }
+
+  return map;
 }
 
 function groupByCategory(products) {
@@ -37,6 +67,7 @@ function createCategoryInfoElement(category, categoryInfo) {
   const div = document.createElement("div");
   div.className = "category-info";
   div.textContent = categoryInfo[category];
+  div.innerHTML = categoryInfo[category].replace(/\\n/g, "<br>");
   return div;
 }
 
@@ -52,11 +83,10 @@ function createProductElement(product) {
         <div class="name">${product.name}</div>
         <div class="desc">${product.description}: ${product.price}</div>
       </div>
-      ${
-        imageUrl
-          ? `<img class="product-img" src="${imageUrl}" alt="${product.name}">`
-          : ""
-      }
+      ${imageUrl
+      ? `<img class="product-img" src="${imageUrl}" alt="${product.name}">`
+      : ""
+    }
     </div>
   `;
   return div;
@@ -86,16 +116,14 @@ async function createContent() {
   const loader = document.getElementById("loader");
   loader.classList.remove("hidden");
 
-  const categoryInfo = {
-    "Honig": "Unsere kleine Hobby-Imkerei liefert Ihnen feinsten Honig aus regionaler Blütenvielfalt\n100% naturbelassen, unverfälscht und mit Liebe gemacht\nOhne Zuckerzusatz - echter, reiner Bienenhonig",
-    "Wildschwein": "Nachhaltig gejagt, regional verarbeitet, höchste Qualität",
-    "Reh": "Nachhaltig gejagt, regional verarbeitet, höchste Qualität"
-  };
-
   try {
-    const products = await fetchProducts();
+    const [products, categoryInfo] = await Promise.all([
+      fetchProducts(),
+      fetchCategories()
+    ]);
+
     const categories = groupByCategory(products);
-     loader.classList.add("hidden");
+    loader.classList.add("hidden");
     renderCategories(container, categories, categoryInfo);
   } catch (err) {
     loader.classList.add("hidden");
