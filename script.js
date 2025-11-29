@@ -83,6 +83,8 @@ function renderCategories(container, categories, categoryInfo) {
 
 async function createContent() {
   const container = document.getElementById("product-container");
+  const loader = document.getElementById("loader");
+  loader.classList.remove("hidden");
 
   const categoryInfo = {
     "Honig": "Unsere kleine Hobby-Imkerei liefert Ihnen feinsten Honig aus regionaler Blütenvielfalt\n100% naturbelassen, unverfälscht und mit Liebe gemacht\nOhne Zuckerzusatz - echter, reiner Bienenhonig",
@@ -93,8 +95,10 @@ async function createContent() {
   try {
     const products = await fetchProducts();
     const categories = groupByCategory(products);
+     loader.classList.add("hidden");
     renderCategories(container, categories, categoryInfo);
   } catch (err) {
+    loader.classList.add("hidden");
     container.innerHTML = "<p>Fehler beim Laden der Produkte</p>";
     console.error(err);
   }
