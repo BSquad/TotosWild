@@ -1,38 +1,25 @@
-const cart = {}; 
+const cart = {};
 
-function assignProductsToCategories(categoriesRaw, productsRaw) {
-  const categoryInfo = Object.fromEntries(categoriesRaw.map(c => [c.Name, c.Beschreibung]));
-  const categories = productsRaw.reduce((acc, p) => {
-    if (!acc[p.Kategorie]) acc[p.Kategorie] = [];
-    acc[p.Kategorie].push(p);
-    return acc;
-  }, {});
-  return { categories, categoryInfo };
-}
-
-function renderProductCategories(container, categories, categoryInfo) {
+function renderProductCategories(container, categories) {
   container.innerHTML = "";
 
-  for (const [catName, prods] of Object.entries(categories)) {
-    container.appendChild(Object.assign(document.createElement("h2"), { textContent: catName }));
+  categories.forEach(cat => {
+    const h2 = document.createElement("h2");
+    h2.textContent = cat.name;
+    container.appendChild(h2);
 
-    if (categoryInfo[catName]) {
-      const infoDiv = buildCategoryInfoElement(categoryInfo, catName);
+    if (cat.beschreibung) {
+      const infoDiv = document.createElement("div");
+      infoDiv.className = "category-info";
+      infoDiv.innerHTML = cat.beschreibung.replace(/\\n/g, "<br>");
       container.appendChild(infoDiv);
     }
 
-    for (const p of prods) {
-      const div = buildProductCard(p);
-      container.appendChild(div);
-    }
-  }
-}
-
-function buildCategoryInfoElement(categoryInfo, catName) {
-  const infoDiv = document.createElement("div");
-  infoDiv.className = "category-info";
-  infoDiv.innerHTML = categoryInfo[catName].replace(/\\n/g, "<br>");
-  return infoDiv;
+    cat.produkte.forEach(p => {
+      const productDiv = buildProductCard(p);
+      container.appendChild(productDiv);
+    });
+  });
 }
 
 function buildProductCard(product) {
@@ -48,7 +35,7 @@ function buildProductCard(product) {
 function CreateProductCardDiv(product) {
   const div = document.createElement("div");
   div.className = "product";
-  div.style.borderRight = `8px solid ${product.Bestand === "X" ? "green" : "red"}`;
+  div.style.borderRight = `8px solid ${product.Bestand ? "green" : "red"}`;
   return div;
 }
 
@@ -147,10 +134,10 @@ function showCartForm() {
   overlay.classList.add("popup-overlay");
 
   let productList = Object.entries(cart)
-  .filter(([_, item]) => item.Menge > 0)
-  .map(([key, item]) => `${key}: ${item.Menge}x ${item.Preis}`)
-  .join("\n")
-  .trim();
+    .filter(([_, item]) => item.Menge > 0)
+    .map(([key, item]) => `${key}: ${item.Menge}x ${item.Preis}`)
+    .join("\n")
+    .trim();
 
   const noProducts = productList === "";
 
@@ -202,11 +189,11 @@ async function initializeProductPage() {
 
   try {
     const [productsRaw, categoriesRaw] = await loadProductsAndCategories();
-    const { categories, categoryInfo } = assignProductsToCategories(categoriesRaw, productsRaw);
-    renderProductCategories(container, categories, categoryInfo);
-  } catch (err) {
+    const categories = buildCategories(categoriesRaw, productsRaw);
+    renderProductCategories(container, categories);
+  } catch (ex) {
     container.innerHTML = "<p>Fehler beim Laden der Produkte</p>";
-    console.error(err);
+    console.error(ex);
   } finally {
     loader.classList.add("hidden");
   }
