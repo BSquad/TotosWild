@@ -1,3 +1,5 @@
+document.getElementById("impressum-btn").addEventListener("click", showImpressum);
+
 async function fetchTSV(url) {
   //https://docs.google.com/spreadsheets/d/1dTOeVckrXhczMe1M2IH5WsL817teLYTqHtMI0hLQDto/edit?gid=0#gid=0
   const res = await fetch(url);
@@ -10,10 +12,10 @@ async function fetchTSV(url) {
 function assignProductsToCategories(categoriesRaw, productsRaw) {
   const categoryInfo = Object.fromEntries(categoriesRaw.map(c => [c.Name, c.Beschreibung]));
   const categories = productsRaw.reduce((acc, p) => {
-      if (!acc[p.Kategorie]) acc[p.Kategorie] = [];
-      acc[p.Kategorie].push(p);
-      return acc;
-    }, {});
+    if (!acc[p.Kategorie]) acc[p.Kategorie] = [];
+    acc[p.Kategorie].push(p);
+    return acc;
+  }, {});
   return { categories, categoryInfo };
 }
 
@@ -58,6 +60,28 @@ function renderContent(container, categories, categoryInfo) {
       container.appendChild(div);
     }
   }
+}
+
+function showImpressum() {
+  const overlay = document.createElement("div");
+  overlay.id = "impressum-overlay";
+  overlay.classList.add("impressum-overlay");
+  overlay.innerHTML = `
+    <div class="overlay-content">
+      <h2>Impressum</h2>
+      <p>Thorsten Jahn</p>
+      <p>Telefon: 0151/40309056</p>
+      <p>E-Mail: toto1977@web.de</p>
+      <p>Abholung in 38315 Werlaburgdorf - Schladen</p>
+      <p>oder 38667 Bad Harzburg möglich</p>
+      <button class="footer-btn" id="close-overlay">Schließen</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  document.getElementById("close-overlay").addEventListener("click", () => {
+    overlay.remove();
+  });
 }
 
 async function createContent() {
