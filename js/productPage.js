@@ -28,26 +28,72 @@ function buildProductCard(p) {
   div.className = "product";
   const img = p.Bild ? `<img class="product-img" src="images/${p.Bild}" alt="${p.Name}">` : "";
 
-  let priceText = `${p.Menge}: ${p.Preis}`;
-  if (p.Menge2 && p.Preis2) {
-    priceText += `<br>${p.Menge2}: ${p.Preis2}`;
-  }
-  if (p.Menge3 && p.Preis3) {
-    priceText += `<br>${p.Menge3}: ${p.Preis3}`;
-  }
-
-  div.innerHTML = `
-          <div class="product-content">
-            <div class="product-text">
-              <div class="name">${p.Name}</div>
-              <div class="price">${priceText}</div>
-            </div>
-            ${img}
-          </div>`;
+  const variants = [
+    { menge: p.Menge, preis: p.Preis },
+    p.Menge2 && p.Preis2 ? { menge: p.Menge2, preis: p.Preis2 } : null,
+    p.Menge3 && p.Preis3 ? { menge: p.Menge3, preis: p.Preis3 } : null,
+  ].filter(Boolean);
 
   div.style.borderRight = `8px solid ${p.Bestand === "X" ? "green" : "red"}`;
+
+  const contentDiv = document.createElement("div");
+  contentDiv.className = "product-content";
+  contentDiv.innerHTML = `
+    <div class="product-text">
+      <div class="name">${p.Name}</div>
+    </div>
+    ${img}
+  `;
+  
+  div.appendChild(contentDiv);
+
+  const controlsDiv = document.createElement("div");
+  controlsDiv.className = "cart-controls";
+
+  variants.forEach(v => {
+    const variantDiv = document.createElement("div");
+    variantDiv.className = "variant-control-inline";
+
+    variantDiv.innerHTML = `
+      <div class="variant-text">
+        <span class="variant-label">${v.menge}:</span>
+        <span class="variant-price">${v.preis}</span>
+      </div>
+      <div class="variant-buttons">
+        <button class="minus-btn" disabled>-</button>
+        <span class="variant-count">0</span>
+        <button class="plus-btn">+</button>
+      </div>
+    `;
+
+    const plusBtn = variantDiv.querySelector(".plus-btn");
+    const minusBtn = variantDiv.querySelector(".minus-btn");
+    const countSpan = variantDiv.querySelector(".variant-count");
+
+    const key = `${p.Name}-${v.menge}`;
+    cart[key] = cart[key] || { menge: 0, preis: v.preis };
+
+    plusBtn.addEventListener("click", () => {
+      cart[key].menge += 1;
+      countSpan.textContent = cart[key].menge;
+      minusBtn.disabled = false;
+    });
+
+    minusBtn.addEventListener("click", () => {
+      if (cart[key].menge > 0) {
+        cart[key].menge -= 1;
+        countSpan.textContent = cart[key].menge;
+        if (cart[key].menge === 0) minusBtn.disabled = true;
+      }
+    });
+
+    controlsDiv.appendChild(variantDiv);
+  });
+
+  div.appendChild(controlsDiv);
   return div;
 }
+
 
 function showImpressum() {
   const overlay = document.createElement("div");
@@ -61,7 +107,7 @@ function showImpressum() {
       <p>E-Mail: toto1977@web.de</p>
       <p>Abholung in 38315 Werlaburgdorf - Schladen</p>
       <p>oder 38667 Bad Harzburg möglich</p>
-      <button id="close-overlay">Schließen</button>
+      <button class="button-default" id="close-overlay">Schließen</button>
     </div>
   `;
 

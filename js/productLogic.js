@@ -1,3 +1,5 @@
+const cart = {}; 
+
 function assignProductsToCategories(categoriesRaw, productsRaw) {
   const categoryInfo = Object.fromEntries(categoriesRaw.map(c => [c.Name, c.Beschreibung]));
   const categories = productsRaw.reduce((acc, p) => {

@@ -123,6 +123,62 @@ h2::after {
   box-shadow: 0 2px 6px var(--shadow-img);
 }
 
+.cart-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.variant-control-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.variant-buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.variant-count {
+  width: 20px;
+  text-align: center;
+}
+
+.plus-btn, .minus-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;      /* rund */
+  border: none;            /* kein Standard-Rahmen */
+  color: #fff;             /* Textfarbe */
+  font-size: 18px;         /* + / - Größe */
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.1s;
+}
+
+.plus-btn {
+  background-color: #4caf50;  /* grün für hinzufügen */
+}
+
+.minus-btn {
+  background-color: #f44336;  /* rot für entfernen */
+}
+
+.plus-btn:hover, .minus-btn:hover {
+  transform: scale(1.1);       /* kleiner Hover-Effekt */
+}
+
+.plus-btn:disabled, .minus-btn:disabled {
+  background-color: #ccc;      /* deaktiviert grau */
+  cursor: not-allowed;
+}
+
 .category-info {
   text-align: center;
   font-style: italic;
@@ -149,7 +205,7 @@ footer {
   background: var(--color-bg-footer);
 }
 
-button {
+.button-default {
   background-color: var(--color-accent);
   color: #fff;
   border: none;
@@ -160,7 +216,7 @@ button {
   transition: background-color 0.2s ease;
 }
 
-button:hover {
+.button-default:hover {
   background-color: var(--color-button-hover);
 }
 
