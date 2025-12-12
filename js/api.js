@@ -18,9 +18,11 @@ async function loadProductsAndCategories() {
   return [products, categories];
 }
 
-function sendTemplateMail(name, date, productList) {
+function sendTemplateMail(name, dateInput, productList) {
   const subject = encodeURIComponent("Bestellung bei Toto's Wild & Honig");
-  const body = encodeURIComponent(`Hallo Herr Jahn,\n\nich möchte folgende Produkte bestellen:\n\n${productList}\n\nAbholungsdatum: ${date}\nBitte bestätigen sie die Bestellung.\n\nViele Grüße,\n${name}`);
+  const date = new Date(dateInput);
+  const formattedDate = new Intl.DateTimeFormat('de-DE').format(date);
+  const body = encodeURIComponent(`Hallo Herr Jahn,\n\nich möchte folgende Produkte bestellen:\n\n${productList}\n\nAbholungsdatum: ${formattedDate}\nBitte bestätigen sie die Bestellung.\n\nViele Grüße,\n${name}`);
   const mailto = `mailto:toto1977@web.de?subject=${subject}&body=${body}`;
 
   window.location.href = mailto;
