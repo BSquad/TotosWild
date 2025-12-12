@@ -318,4 +318,8 @@ button:hover {
   .category-info {
     font-size: 14px;
   }
+
+  .cart-text {
+    display: none;
+  }
 }
