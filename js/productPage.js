@@ -8,14 +8,14 @@ function renderProductCategories(container, categories) {
     h2.textContent = cat.name;
     container.appendChild(h2);
 
-    if (cat.beschreibung) {
+    if (cat.description) {
       const infoDiv = document.createElement("div");
       infoDiv.className = "category-info";
-      infoDiv.innerHTML = cat.beschreibung.replace(/\\n/g, "<br>");
+      infoDiv.innerHTML = cat.description.replace(/\\n/g, "<br>");
       container.appendChild(infoDiv);
     }
 
-    cat.produkte.forEach(p => {
+    cat.products.forEach(p => {
       const productDiv = buildProductCard(p);
       container.appendChild(productDiv);
     });

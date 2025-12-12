@@ -1,12 +1,12 @@
 class Kategorie {
   name;
-  beschreibung;
-  produkte;
+  description;
+  products;
 
   constructor(name, beschreibung) {
     this.name = name;
-    this.beschreibung = beschreibung;
-    this.produkte = [];
+    this.description = beschreibung;
+    this.products = [];
   }
 }
 
@@ -21,7 +21,7 @@ function buildCategories(categoriesRaw, productsRaw) {
     if (!categoriesMap[catName]) {
       categoriesMap[catName] = new Kategorie(catName, "");
     }
-    categoriesMap[catName].produkte.push(p);
+    categoriesMap[catName].products.push(p);
   });
 
   return Object.values(categoriesMap);
