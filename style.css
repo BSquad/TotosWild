@@ -155,33 +155,30 @@ h2::after {
   white-space: pre-line;
 }
 
-
-/* ============================= */
-/*             Footer            */
-/* ============================= */
-
+/* Footer */
 footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  margin: 60px 0 0;
-  padding: 30px 20px;
+  padding: 15px 0px;
   color: var(--color-text-footer);
   font-size: 14px;
+  gap: 20px;
   border-top: 3px solid var(--color-accent);
   background: var(--color-bg-footer);
 }
 
 /* Legende */
 .product-legend {
-  position: absolute; /* rechts oben über den Produkten */
-  top: 20px;
-  right: 20px;
   background-color: #ffffffee;
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 14px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  text-align: left;
-  z-index: 10;
 }
 
 .product-legend div {
