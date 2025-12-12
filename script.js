@@ -35,11 +35,18 @@ function renderContent(container, categories, categoryInfo) {
       const div = document.createElement("div");
       div.className = "product";
       const img = p.Bild ? `<img class="product-img" src="images/${p.Bild}" alt="${p.Name}">` : "";
+      let priceText = `${p.Menge}: ${p.Preis}`;
+      if (p.Menge2 && p.Preis2) {
+        priceText += `<br>${p.Menge2}: ${p.Preis2}`;
+      }
+      if (p.Menge3 && p.Preis3) {
+        priceText += `<br>${p.Menge3}: ${p.Preis3}`;
+      }
       div.innerHTML = `
           <div class="product-content">
             <div class="product-text">
               <div class="name">${p.Name}</div>
-              <div class="desc">${p.Beschreibung}: ${p.Preis}</div>
+              <div class="price">${priceText}</div>
             </div>
             ${img}
           </div>`;
