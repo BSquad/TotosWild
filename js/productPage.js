@@ -39,8 +39,7 @@ function buildProductCard(product) {
   const div = CreateProductCardDiv(product);
   const contentDiv = createProductContent(product);
   div.appendChild(contentDiv);
-  const variants = getVariants(product);
-  const variantControls = createVariantControls(product, variants);
+  const variantControls = createVariantControls(product);
   div.appendChild(variantControls);
 
   return div;
@@ -66,20 +65,12 @@ function createProductContent(product) {
   return contentDiv;
 }
 
-function getVariants(product) {
-  return [
-    { menge: product.Menge, preis: product.Preis },
-    product.Menge2 && product.Preis2 ? { menge: product.Menge2, preis: product.Preis2 } : null,
-    product.Menge3 && product.Preis3 ? { menge: product.Menge3, preis: product.Preis3 } : null
-  ].filter(Boolean);
-}
-
-function createVariantControls(product, variants) {
+function createVariantControls(product) {
   const controlsDiv = document.createElement("div");
   controlsDiv.className = "cart-controls";
 
-  variants.forEach(v => {
-    controlsDiv.appendChild(createVariantControl(product, v));
+  product.Varianten.forEach(variant => {
+    controlsDiv.appendChild(createVariantControl(product, variant));
   });
 
   return controlsDiv;
@@ -91,8 +82,8 @@ function createVariantControl(product, variant) {
 
   variantDiv.innerHTML = `
     <div class="variant-text">
-      <span class="variant-label">${variant.menge}:</span>
-      <span class="variant-price">${variant.preis}</span>
+      <span class="variant-label">${variant.Menge}:</span>
+      <span class="variant-price">${variant.Preis}</span>
     </div>
     <div class="variant-buttons">
       <button class="minus-btn" disabled>-</button>
@@ -104,9 +95,9 @@ function createVariantControl(product, variant) {
   const plusBtn = variantDiv.querySelector(".plus-btn");
   const minusBtn = variantDiv.querySelector(".minus-btn");
   const countSpan = variantDiv.querySelector(".variant-count");
-  const key = `${product.Name}-${variant.menge}`;
+  const key = `${product.Name} ${variant.Menge}`;
 
-  cart[key] = cart[key] || { menge: 0, preis: variant.preis };
+  cart[key] = cart[key] || { Menge: 0, Preis: variant.Preis };
   setupVariantButtons(key, plusBtn, minusBtn, countSpan);
 
   return variantDiv;
@@ -114,16 +105,16 @@ function createVariantControl(product, variant) {
 
 function setupVariantButtons(key, plusBtn, minusBtn, countSpan) {
   plusBtn.addEventListener("click", () => {
-    cart[key].menge += 1;
-    countSpan.textContent = cart[key].menge;
+    cart[key].Menge += 1;
+    countSpan.textContent = cart[key].Menge;
     minusBtn.disabled = false;
   });
 
   minusBtn.addEventListener("click", () => {
-    if (cart[key].menge > 0) {
-      cart[key].menge -= 1;
-      countSpan.textContent = cart[key].menge;
-      if (cart[key].menge === 0) minusBtn.disabled = true;
+    if (cart[key].Menge > 0) {
+      cart[key].Menge -= 1;
+      countSpan.textContent = cart[key].Menge;
+      if (cart[key].Menge === 0) minusBtn.disabled = true;
     }
   });
 }
@@ -156,8 +147,8 @@ function showCartForm() {
   overlay.classList.add("popup-overlay");
 
   let productList = Object.entries(cart)
-  .filter(([_, item]) => item.menge > 0)
-  .map(([key, item]) => `${key} - ${item.menge}x ${item.preis}`)
+  .filter(([_, item]) => item.Menge > 0)
+  .map(([key, item]) => `${key}: ${item.Menge}x ${item.Preis}`)
   .join("\n")
   .trim();
 

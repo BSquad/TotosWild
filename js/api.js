@@ -8,10 +8,13 @@ async function fetchTSV(url) {
 }
 
 async function loadProductsAndCategories() {
-  const [products, categories] = await Promise.all([
+  const [productsRaw, categories] = await Promise.all([
     fetchTSV("https://docs.google.com/spreadsheets/d/e/2PACX-1vREBTSfAxtL3CUUCYdfq18N96hbNra9mSQP7NjkolG--a0DeveIkb0QZhtsm39yqDCAjtebofyHod42/pub?gid=0&output=tsv"),
     fetchTSV("https://docs.google.com/spreadsheets/d/e/2PACX-1vREBTSfAxtL3CUUCYdfq18N96hbNra9mSQP7NjkolG--a0DeveIkb0QZhtsm39yqDCAjtebofyHod42/pub?gid=771625926&output=tsv")
   ]);
+
+  const products = productsRaw.map(p => new Product(p));
+
   return [products, categories];
 }
 
