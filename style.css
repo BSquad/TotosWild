@@ -186,7 +186,6 @@ footer {
   height: 18px;
 }
 
-/* Legende */
 .product-legend {
   background-color: #ffffffee;
   padding: 8px 12px;
@@ -197,8 +196,8 @@ footer {
 
 .product-legend div {
   display: flex;
-  align-items: center;
   margin-bottom: 4px;
+  justify-content: flex-end;
 }
 
 .product-legend div:last-child {
@@ -210,7 +209,8 @@ footer {
   height: 12px;
   border-radius: 50%;
   display: inline-block;
-  margin-right: 6px;
+  margin-left: 6px;
+  margin-top: 4px;
   flex-shrink: 0;
 }
 
