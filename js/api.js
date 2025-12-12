@@ -20,7 +20,7 @@ async function loadProductsAndCategories() {
 
 function sendTemplateMail(name, date, productList) {
   const subject = encodeURIComponent("Bestellung bei Toto's Wild & Honig");
-  const body = encodeURIComponent(`Hallo,\n\nich möchte folgende Produkte bestellen:\n\n${productList}\n\nName: ${name}\nAbholungsdatum: ${date}\n`);
+  const body = encodeURIComponent(`Hallo Herr Jahn,\n\nich möchte folgende Produkte bestellen:\n\n${productList}\n\nAbholungsdatum: ${date}\nBitte bestätigen sie die Bestellung.\n\nViele Grüße,\n${name}`);
   const mailto = `mailto:toto1977@web.de?subject=${subject}&body=${body}`;
 
   window.location.href = mailto;
