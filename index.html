@@ -25,8 +25,8 @@
   <footer>
     <button class="footer-btn" id="impressum-btn">Impressum</button>
     <button class="footer-btn" id="cart-btn">
-      <img src="images/cart-icon.png" class="cart-icon"> 
-       <span class="cart-text">Einkaufswagen</span>
+      <img src="images/cart-icon.png" class="cart-icon">
+      <span class="cart-text">Einkaufswagen</span>
     </button>
 
     <div class="product-legend">
@@ -40,16 +40,27 @@
   <script> /*TODO Nach Testen löschen*/
     const timestamp = new Date().getTime();
 
+    function loadScript(src, callback) {
+      const script = document.createElement("script");
+      script.src = src + "?v=" + timestamp;
+      script.onload = () => callback && callback();
+      document.body.appendChild(script);
+    }
+
     // CSS dynamisch laden
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "style.css?v=" + timestamp;
+    link.href = "css/style.css?v=" + timestamp;
     document.head.appendChild(link);
 
     // JS dynamisch laden
-    const script = document.createElement("script");
-    script.src = "script.js?v=" + timestamp;
-    document.body.appendChild(script);
+    loadScript("js/api.js", () => {
+      loadScript("js/productLogic.js", () => {
+        loadScript("js/productPage.js", () => {
+          loadScript("js/main.js");
+        });
+      });
+    });
   </script>
 
 </body>
