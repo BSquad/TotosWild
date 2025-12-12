@@ -40,11 +40,14 @@
   <script> /*TODO Nach Testen löschen*/
     const timestamp = new Date().getTime();
 
-    function loadScript(src, callback) {
-      const script = document.createElement("script");
-      script.src = src + "?v=" + timestamp;
-      script.onload = () => callback && callback();
-      document.body.appendChild(script);
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = src + "?v=" + timestamp;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
     }
 
     // CSS dynamisch laden
@@ -54,13 +57,16 @@
     document.head.appendChild(link);
 
     // JS dynamisch laden
-    loadScript("js/api.js", () => {
-      loadScript("js/productLogic.js", () => {
-        loadScript("js/productPage.js", () => {
-          loadScript("js/main.js");
-        });
-      });
-    });
+    (async () => {
+      try {
+        await loadScript("js/api.js");
+        await loadScript("js/productLogic.js");
+        await loadScript("js/productPage.js");
+        await loadScript("js/main.js");
+      } catch (err) {
+        console.error("Fehler beim Laden der Skripte", err);
+      }
+    })();
   </script>
 
 </body>
