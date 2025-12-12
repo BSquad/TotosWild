@@ -24,11 +24,6 @@
   --text-shadow-light: rgba(0,0,0,0.1);
 }
 
-
-/* ============================= */
-/* Grundlayout & Hintergrund     */
-/* ============================= */
-
 body {
   margin: 0;
   padding: 0;
@@ -44,11 +39,6 @@ body {
   padding: 0 20px;
 }
 
-
-/* ============================= */
-/*             Header            */
-/* ============================= */
-
 header {
   text-align: center;
   padding: 60px 20px;
@@ -63,11 +53,6 @@ header h1 {
   font-size: 48px;
   font-weight: 700;
 }
-
-
-/* ============================= */
-/*           Kategorien          */
-/* ============================= */
 
 h2 {
   margin: 60px 0 15px;
@@ -86,11 +71,6 @@ h2::after {
   background-color: var(--color-accent);
   border-radius: 2px;
 }
-
-
-/* ============================= */
-/*         Produktkarten         */
-/* ============================= */
 
 .product {
   background-color: #ffffffee;
@@ -166,7 +146,7 @@ footer {
   background: var(--color-bg-footer);
 }
 
-.footer-btn {
+button {
   background-color: var(--color-accent);
   color: #fff;
   border: none;
@@ -177,13 +157,20 @@ footer {
   transition: background-color 0.2s ease;
 }
 
-.footer-btn:hover {
+button:hover {
   background-color: #b88435;
 }
 
+.footer-btn {
+  display: flex;
+  height: 36px;
+  gap: 6px;
+  align-items: center;
+}
+
 .cart-icon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 .product-legend {

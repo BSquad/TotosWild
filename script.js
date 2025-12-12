@@ -74,7 +74,7 @@ function showImpressum() {
       <p>E-Mail: toto1977@web.de</p>
       <p>Abholung in 38315 Werlaburgdorf - Schladen</p>
       <p>oder 38667 Bad Harzburg möglich</p>
-      <button class="footer-btn" id="close-overlay">Schließen</button>
+      <button id="close-overlay">Schließen</button>
     </div>
   `;
 
