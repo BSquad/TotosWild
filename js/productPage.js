@@ -1,4 +1,4 @@
-const cart = {};
+const cart = new Map();
 
 function renderProductCategories(container, categories) {
   container.innerHTML = "";
@@ -57,13 +57,13 @@ function createVariantControls(product) {
   controlsDiv.className = "cart-controls";
 
   product.Varianten.forEach(variant => {
-    controlsDiv.appendChild(createVariantControl(product, variant));
+    controlsDiv.appendChild(createVariantControl(variant));
   });
 
   return controlsDiv;
 }
 
-function createVariantControl(product, variant) {
+function createVariantControl(variant) {
   const variantDiv = document.createElement("div");
   variantDiv.className = "variant-control-inline";
 
@@ -79,30 +79,38 @@ function createVariantControl(product, variant) {
     </div>
   `;
 
-  const plusBtn = variantDiv.querySelector(".plus-btn");
-  const minusBtn = variantDiv.querySelector(".minus-btn");
-  const countSpan = variantDiv.querySelector(".variant-count");
-  const key = `${product.Name} ${variant.Menge}`;
-
-  cart[key] = cart[key] || { Menge: 0, Preis: variant.Preis };
-  setupVariantButtons(key, plusBtn, minusBtn, countSpan);
+  setupVariantButtons(variant, variantDiv);
 
   return variantDiv;
 }
 
-function setupVariantButtons(key, plusBtn, minusBtn, countSpan) {
+function setupVariantButtons(variant, variantDiv) {
+  const plusBtn = variantDiv.querySelector(".plus-btn");
+  const minusBtn = variantDiv.querySelector(".minus-btn");
+  const countSpan = variantDiv.querySelector(".variant-count");
+
   plusBtn.addEventListener("click", () => {
-    cart[key].Menge += 1;
-    countSpan.textContent = cart[key].Menge;
+    const currentAmount = cart.get(variant) || 0;
+    const newAmount = currentAmount + 1;
+    cart.set(variant, newAmount);
+    countSpan.textContent = newAmount;
     minusBtn.disabled = false;
   });
 
   minusBtn.addEventListener("click", () => {
-    if (cart[key].Menge > 0) {
-      cart[key].Menge -= 1;
-      countSpan.textContent = cart[key].Menge;
-      if (cart[key].Menge === 0) minusBtn.disabled = true;
+    const currentAmount = cart.get(variant) || 0;
+    if (currentAmount <= 0) return;
+
+    const newAmount = currentAmount - 1;
+
+    if (newAmount > 0) {
+      cart.set(variant, newAmount);
+    } else {
+      cart.delete(variant);
     }
+
+    countSpan.textContent = newAmount;
+    minusBtn.disabled = newAmount === 0;
   });
 }
 
@@ -133,9 +141,10 @@ function showCartForm() {
   overlay.id = "cart-overlay";
   overlay.classList.add("popup-overlay");
 
-  let productList = Object.entries(cart)
-    .filter(([_, item]) => item.Menge > 0)
-    .map(([key, item]) => `${key}: ${item.Menge}x ${item.Preis}`)
+  let productList = Array.from(cart.entries())
+    .map(([variant, amount]) => {
+      return `${variant.Produkt.Name} ${variant.Menge}: ${amount}x ${variant.Preis}`;
+    })
     .join("\n")
     .trim();
 

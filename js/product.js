@@ -1,4 +1,10 @@
 class Product {
+    Name;
+    Kategorie;
+    Bild;
+    Bestand;
+    Varianten;
+
     /**
      * @param {object} data - Ein Objekt aus der TSV (ein Produkt)
      */
@@ -9,8 +15,20 @@ class Product {
         this.Bestand = data.Bestand === "X";
         this.Varianten = [];
 
-        if (data.Menge && data.Preis) this.Varianten.push({ Menge: data.Menge, Preis: data.Preis });
-        if (data.Menge2 && data.Preis2) this.Varianten.push({ Menge: data.Menge2, Preis: data.Preis2 });
-        if (data.Menge3 && data.Preis3) this.Varianten.push({ Menge: data.Menge3, Preis: data.Preis3 });
+        if (data.Menge && data.Preis) this.Varianten.push(new Variant(this, data.Menge, data.Preis));
+        if (data.Menge2 && data.Preis2) this.Varianten.push(new Variant(this, data.Menge2, data.Preis2));
+        if (data.Menge3 && data.Preis3) this.Varianten.push(new Variant(this, data.Menge3, data.Preis3));
+    }
+}
+
+class Variant {
+    Produkt;
+    Menge;
+    Preis;
+
+    constructor(produkt, menge, preis) {
+        this.Produkt = produkt;
+        this.Menge = menge;
+        this.Preis = preis;
     }
 }
