@@ -175,7 +175,8 @@ button:hover {
 }
 
 .product-legend {
-  background-color: #ffffffee;
+  background-color: var(--color-accent);
+  color: #fff;
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 14px;
