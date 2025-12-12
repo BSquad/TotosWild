@@ -157,7 +157,7 @@ function showCartForm() {
 
   let productList = Object.entries(cart).map(([key, item]) => {
     if (item.menge === 0) return null;
-    return `${key} - ${item.menge} Stück, Preis: ${item.preis}`;
+    return `${key} - ${item.menge}x ${item.preis}`;
   }).join("\n");
 
   const noProducts = productList.trim() === "";
@@ -195,10 +195,7 @@ function showCartForm() {
     const name = document.getElementById("customer-name").value;
     const date = document.getElementById("pickup-date").value;
 
-    const subject = encodeURIComponent("Bestellung bei Toto's Wild & Honig");
-    const body = encodeURIComponent(`Hallo,\n\nich möchte folgende Produkte bestellen:\n\n${productList}\n\nName: ${name}\nAbholungsdatum: ${date}\n`);
-    const mailto = `mailto:toto1977@web.de?subject=${subject}&body=${body}`;
-    window.location.href = mailto;
+    sendTemplateMail(name, date, productList);
 
     overlay.remove();
   });
