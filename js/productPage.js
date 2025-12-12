@@ -155,12 +155,13 @@ function showCartForm() {
   overlay.id = "cart-overlay";
   overlay.classList.add("popup-overlay");
 
-  let productList = Object.entries(cart).map(([key, item]) => {
-    if (item.menge === 0) return null;
-    return `${key} - ${item.menge}x ${item.preis}`;
-  }).join("\n");
+  let productList = Object.entries(cart)
+  .filter(([_, item]) => item.menge > 0)
+  .map(([key, item]) => `${key} - ${item.menge}x ${item.preis}`)
+  .join("\n")
+  .trim();
 
-  const noProducts = productList.trim() === "";
+  const noProducts = productList === "";
 
   if (noProducts) {
     productList = "Keine Produkte im Warenkorb.";
