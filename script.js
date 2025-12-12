@@ -55,7 +55,7 @@ function renderContent(container, categories, categoryInfo) {
             ${img}
           </div>`;
 
-      div.style.borderRight = `8px solid ${p.Bestand === "X" ? "#4caf50" : "#f44336"}`;
+      div.style.borderRight = `8px solid ${p.Bestand === "X" ? "green" : "red"}`;
 
       container.appendChild(div);
     }
