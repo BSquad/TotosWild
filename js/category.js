@@ -1,28 +1,24 @@
-class Kategorie {
+class Category {
   name;
   description;
   products;
 
-  constructor(name, beschreibung) {
-    this.name = name;
-    this.description = beschreibung;
+  constructor(data) {
+    this.name = data.Name;
+    this.description = data.Beschreibung;
     this.products = [];
   }
 }
 
-function buildCategories(categoriesRaw, productsRaw) {
-  const categoriesMap = {};
-  categoriesRaw.forEach(category => {
-    categoriesMap[category.Name] = new Kategorie(category.Name, category.Beschreibung);
-  });
+function buildCategories(categories, products) {
+  const categoryMap = new Map(
+    categories.map(c => [c.name, c])
+  );
 
-  productsRaw.forEach(p => {
-    const catName = p.Kategorie;
-    if (!categoriesMap[catName]) {
-      categoriesMap[catName] = new Kategorie(catName, "");
-    }
-    categoriesMap[catName].products.push(p);
-  });
+  for (const product of products) {
+    const category = categoryMap.get(product.category);
+    category.products.push(product);
+  }
 
-  return Object.values(categoriesMap);
+  return [...categoryMap.values()];
 }

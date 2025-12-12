@@ -35,17 +35,17 @@ function buildProductCard(product) {
 function CreateProductCardDiv(product) {
   const div = document.createElement("div");
   div.className = "product";
-  div.style.borderRight = `8px solid ${product.Bestand ? "green" : "red"}`;
+  div.style.borderRight = `8px solid ${product.stock ? "green" : "red"}`;
   return div;
 }
 
 function createProductContent(product) {
   const contentDiv = document.createElement("div");
   contentDiv.className = "product-content";
-  const imgHtml = product.Bild ? `<img class="product-img" src="images/${product.Bild}" alt="${product.Name}">` : "";
+  const imgHtml = product.imageName ? `<img class="product-img" src="images/${product.imageName}">` : "";
   contentDiv.innerHTML = `
     <div class="product-text">
-      <div class="name">${product.Name}</div>
+      <div class="name">${product.name}</div>
     </div>
     ${imgHtml}
   `;
@@ -56,7 +56,7 @@ function createVariantControls(product) {
   const controlsDiv = document.createElement("div");
   controlsDiv.className = "cart-controls";
 
-  product.Varianten.forEach(variant => {
+  product.variants.forEach(variant => {
     controlsDiv.appendChild(createVariantControl(variant));
   });
 
@@ -69,8 +69,8 @@ function createVariantControl(variant) {
 
   variantDiv.innerHTML = `
     <div class="variant-text">
-      <span class="variant-label">${variant.Menge}:</span>
-      <span class="variant-price">${variant.Preis}</span>
+      <span class="variant-label">${variant.amount}:</span>
+      <span class="variant-price">${variant.price}</span>
     </div>
     <div class="variant-buttons">
       <button class="minus-btn" disabled>-</button>
@@ -143,7 +143,7 @@ function showCartForm() {
 
   let productList = Array.from(cart.entries())
     .map(([variant, amount]) => {
-      return `${variant.Produkt.Name} ${variant.Menge}: ${amount}x ${variant.Preis}`;
+      return `${variant.product.name} ${variant.amount}: ${amount}x ${variant.price}`;
     })
     .join("\n")
     .trim();
@@ -197,9 +197,9 @@ async function initializeProductPage() {
   document.getElementById("cart-btn").addEventListener("click", showCartForm);
 
   try {
-    const [productsRaw, categoriesRaw] = await loadProductsAndCategories();
-    const categories = buildCategories(categoriesRaw, productsRaw);
-    renderProductCategories(container, categories);
+    const [products, categoriesEmpty] = await loadProductsAndCategories();
+    const categoriesMap = buildCategories(categoriesEmpty, products);
+    renderProductCategories(container, categoriesMap);
   } catch (ex) {
     container.innerHTML = "<p>Fehler beim Laden der Produkte</p>";
     console.error(ex);
