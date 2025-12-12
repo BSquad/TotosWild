@@ -1,3 +1,15 @@
+const cart = {}; 
+
+function assignProductsToCategories(categoriesRaw, productsRaw) {
+  const categoryInfo = Object.fromEntries(categoriesRaw.map(c => [c.Name, c.Beschreibung]));
+  const categories = productsRaw.reduce((acc, p) => {
+    if (!acc[p.Kategorie]) acc[p.Kategorie] = [];
+    acc[p.Kategorie].push(p);
+    return acc;
+  }, {});
+  return { categories, categoryInfo };
+}
+
 function renderProductCategories(container, categories, categoryInfo) {
   container.innerHTML = "";
 
@@ -23,82 +35,103 @@ function buildCategoryInfoElement(categoryInfo, catName) {
   return infoDiv;
 }
 
-function buildProductCard(p) {
+function buildProductCard(product) {
+  const div = CreateProductCardDiv(product);
+  const contentDiv = createProductContent(product);
+  div.appendChild(contentDiv);
+  const variants = getVariants(product);
+  const variantControls = createVariantControls(product, variants);
+  div.appendChild(variantControls);
+
+  return div;
+}
+
+function CreateProductCardDiv(product) {
   const div = document.createElement("div");
   div.className = "product";
-  const img = p.Bild ? `<img class="product-img" src="images/${p.Bild}" alt="${p.Name}">` : "";
+  div.style.borderRight = `8px solid ${product.Bestand === "X" ? "green" : "red"}`;
+  return div;
+}
 
-  const variants = [
-    { menge: p.Menge, preis: p.Preis },
-    p.Menge2 && p.Preis2 ? { menge: p.Menge2, preis: p.Preis2 } : null,
-    p.Menge3 && p.Preis3 ? { menge: p.Menge3, preis: p.Preis3 } : null,
-  ].filter(Boolean);
-
-  div.style.borderRight = `8px solid ${p.Bestand === "X" ? "green" : "red"}`;
-
+function createProductContent(product) {
   const contentDiv = document.createElement("div");
   contentDiv.className = "product-content";
+  const imgHtml = product.Bild ? `<img class="product-img" src="images/${product.Bild}" alt="${product.Name}">` : "";
   contentDiv.innerHTML = `
     <div class="product-text">
-      <div class="name">${p.Name}</div>
+      <div class="name">${product.Name}</div>
     </div>
-    ${img}
+    ${imgHtml}
   `;
-  
-  div.appendChild(contentDiv);
+  return contentDiv;
+}
 
+function getVariants(product) {
+  return [
+    { menge: product.Menge, preis: product.Preis },
+    product.Menge2 && product.Preis2 ? { menge: product.Menge2, preis: product.Preis2 } : null,
+    product.Menge3 && product.Preis3 ? { menge: product.Menge3, preis: product.Preis3 } : null
+  ].filter(Boolean);
+}
+
+function createVariantControls(product, variants) {
   const controlsDiv = document.createElement("div");
   controlsDiv.className = "cart-controls";
 
   variants.forEach(v => {
-    const variantDiv = document.createElement("div");
-    variantDiv.className = "variant-control-inline";
-
-    variantDiv.innerHTML = `
-      <div class="variant-text">
-        <span class="variant-label">${v.menge}:</span>
-        <span class="variant-price">${v.preis}</span>
-      </div>
-      <div class="variant-buttons">
-        <button class="minus-btn" disabled>-</button>
-        <span class="variant-count">0</span>
-        <button class="plus-btn">+</button>
-      </div>
-    `;
-
-    const plusBtn = variantDiv.querySelector(".plus-btn");
-    const minusBtn = variantDiv.querySelector(".minus-btn");
-    const countSpan = variantDiv.querySelector(".variant-count");
-
-    const key = `${p.Name}-${v.menge}`;
-    cart[key] = cart[key] || { menge: 0, preis: v.preis };
-
-    plusBtn.addEventListener("click", () => {
-      cart[key].menge += 1;
-      countSpan.textContent = cart[key].menge;
-      minusBtn.disabled = false;
-    });
-
-    minusBtn.addEventListener("click", () => {
-      if (cart[key].menge > 0) {
-        cart[key].menge -= 1;
-        countSpan.textContent = cart[key].menge;
-        if (cart[key].menge === 0) minusBtn.disabled = true;
-      }
-    });
-
-    controlsDiv.appendChild(variantDiv);
+    controlsDiv.appendChild(createVariantControl(product, v));
   });
 
-  div.appendChild(controlsDiv);
-  return div;
+  return controlsDiv;
 }
 
+function createVariantControl(product, variant) {
+  const variantDiv = document.createElement("div");
+  variantDiv.className = "variant-control-inline";
+
+  variantDiv.innerHTML = `
+    <div class="variant-text">
+      <span class="variant-label">${variant.menge}:</span>
+      <span class="variant-price">${variant.preis}</span>
+    </div>
+    <div class="variant-buttons">
+      <button class="minus-btn" disabled>-</button>
+      <span class="variant-count">0</span>
+      <button class="plus-btn">+</button>
+    </div>
+  `;
+
+  const plusBtn = variantDiv.querySelector(".plus-btn");
+  const minusBtn = variantDiv.querySelector(".minus-btn");
+  const countSpan = variantDiv.querySelector(".variant-count");
+  const key = `${product.Name}-${variant.menge}`;
+
+  cart[key] = cart[key] || { menge: 0, preis: variant.preis };
+  setupVariantButtons(key, plusBtn, minusBtn, countSpan);
+
+  return variantDiv;
+}
+
+function setupVariantButtons(key, plusBtn, minusBtn, countSpan) {
+  plusBtn.addEventListener("click", () => {
+    cart[key].menge += 1;
+    countSpan.textContent = cart[key].menge;
+    minusBtn.disabled = false;
+  });
+
+  minusBtn.addEventListener("click", () => {
+    if (cart[key].menge > 0) {
+      cart[key].menge -= 1;
+      countSpan.textContent = cart[key].menge;
+      if (cart[key].menge === 0) minusBtn.disabled = true;
+    }
+  });
+}
 
 function showImpressum() {
   const overlay = document.createElement("div");
   overlay.id = "impressum-overlay";
-  overlay.classList.add("impressum-overlay");
+  overlay.classList.add("popup-overlay");
   overlay.innerHTML = `
     <div class="overlay-content">
       <h2>Impressum</h2>
@@ -117,10 +150,66 @@ function showImpressum() {
   });
 }
 
+function showCartForm() {
+  const overlay = document.createElement("div");
+  overlay.id = "cart-overlay";
+  overlay.classList.add("popup-overlay");
+
+  let productList = Object.entries(cart).map(([key, item]) => {
+    if (item.menge === 0) return null;
+    return `${key} - ${item.menge} Stück, Preis: ${item.preis}`;
+  }).join("\n");
+
+  const noProducts = productList.trim() === "";
+
+  if (noProducts) {
+    productList = "Keine Produkte im Warenkorb.";
+  }
+
+  overlay.innerHTML = `
+    <div class="overlay-content">
+      <h2>Bestellung aufgeben</h2>
+      <form id="cart-form">
+        <label for="pickup-date">Abholungsdatum:</label>
+        <input type="date" id="pickup-date" required>
+
+        <label for="customer-name">Name:</label>
+        <input type="text" id="customer-name" placeholder="Dein Name" required>
+
+        <label for="product-list">Produkte:</label>
+        <textarea id="product-list" readonly>${productList}</textarea>
+
+        <div style="margin-top:15px; display:flex; gap:10px; justify-content:flex-end;">
+          <button type="submit" class="button-default" ${noProducts ? "disabled" : ""}>Email erstellen</button>
+
+          <button type="button" class="button-default" id="cancel-btn">Abbrechen</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  document.getElementById("cancel-btn").addEventListener("click", () => overlay.remove());
+  document.getElementById("cart-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("customer-name").value;
+    const date = document.getElementById("pickup-date").value;
+
+    const subject = encodeURIComponent("Bestellung bei Toto's Wild & Honig");
+    const body = encodeURIComponent(`Hallo,\n\nich möchte folgende Produkte bestellen:\n\n${productList}\n\nName: ${name}\nAbholungsdatum: ${date}\n`);
+    const mailto = `mailto:toto1977@web.de?subject=${subject}&body=${body}`;
+    window.location.href = mailto;
+
+    overlay.remove();
+  });
+}
+
 async function initializeProductPage() {
-  const container = document.getElementById("product-container");
   const loader = document.getElementById("loader");
   loader.classList.remove("hidden");
+  const container = document.getElementById("product-container");
+  document.getElementById("impressum-btn").addEventListener("click", showImpressum);
+  document.getElementById("cart-btn").addEventListener("click", showCartForm);
 
   try {
     const [productsRaw, categoriesRaw] = await loadProductsAndCategories();

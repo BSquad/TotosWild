@@ -170,11 +170,11 @@ h2::after {
   background-color: #f44336;  /* rot für entfernen */
 }
 
-.plus-btn:hover, .minus-btn:hover {
+.button-default:hover, .plus-btn:hover, .minus-btn:hover {
   transform: scale(1.1);       /* kleiner Hover-Effekt */
 }
 
-.plus-btn:disabled, .minus-btn:disabled {
+.button-default:disabled, .plus-btn:disabled, .minus-btn:disabled {
   background-color: #ccc;      /* deaktiviert grau */
   cursor: not-allowed;
 }
@@ -214,10 +214,6 @@ footer {
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-}
-
-.button-default:hover {
-  background-color: var(--color-button-hover);
 }
 
 .footer-btn {
@@ -269,7 +265,7 @@ footer {
   background-color: red;
 }
 
-.impressum-overlay {
+.popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -282,7 +278,7 @@ footer {
   z-index: 2000;
 }
 
-.impressum-overlay .overlay-content {
+.popup-overlay .overlay-content {
   background-color: #fff;
   padding: 20px 30px;
   border-radius: 12px;
@@ -292,14 +288,14 @@ footer {
   box-shadow: 0 4px 12px var(--shadow-img);
 }
 
-.impressum-overlay h2 {
+.popup-overlay h2 {
   margin-top: 0;
   margin-bottom: 15px;
   font-size: 22px;
   color: var(--color-text-dark);
 }
 
-.impressum-overlay .close-overlay {
+.popup-overlay .close-overlay {
   margin-top: 20px;
   padding: 8px 14px;
   background-color: var(--color-accent);
@@ -311,11 +307,36 @@ footer {
   transition: background-color 0.2s ease;
 }
 
-.impressum-overlay .close-overlay:hover {
-  background-color: var(--color-button-hover);
+.popup-overlay form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.impressum-overlay p {
+.popup-overlay label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.popup-overlay input[type="text"],
+.popup-overlay input[type="date"],
+.popup-overlay textarea {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.popup-overlay textarea {
+  resize: none;
+  height: 100px;
+  background-color: #f7f7f7;
+}
+
+.popup-overlay p {
   margin: 6px 0;
 }
 
