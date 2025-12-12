@@ -35,6 +35,7 @@ function renderContent(container, categories, categoryInfo) {
       const div = document.createElement("div");
       div.className = "product";
       const img = p.Bild ? `<img class="product-img" src="images/${p.Bild}" alt="${p.Name}">` : "";
+
       let priceText = `${p.Menge}: ${p.Preis}`;
       if (p.Menge2 && p.Preis2) {
         priceText += `<br>${p.Menge2}: ${p.Preis2}`;
@@ -42,6 +43,7 @@ function renderContent(container, categories, categoryInfo) {
       if (p.Menge3 && p.Preis3) {
         priceText += `<br>${p.Menge3}: ${p.Preis3}`;
       }
+
       div.innerHTML = `
           <div class="product-content">
             <div class="product-text">
@@ -50,6 +52,9 @@ function renderContent(container, categories, categoryInfo) {
             </div>
             ${img}
           </div>`;
+
+      div.style.borderRight = `8px solid ${p.Bestand === "X" ? "#4caf50" : "#f44336"}`;
+
       container.appendChild(div);
     }
   }

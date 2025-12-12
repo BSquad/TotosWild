@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
   <meta charset="UTF-8">
   <title>Totos Wild</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!--<link rel="stylesheet" href="style.css?v=0.0.2">--> <!--TODO Nach Testen auf statisch wechseln-->
   <link rel="icon" type="image/png" href="images/favicon.png">
-  <link rel="shortcut icon" type="image/png" href="images/favicon.png"> <!-- Optional: als Shortcut Icon für ältere Browser -->
+  <link rel="shortcut icon" type="image/png" href="images/favicon.png">
+  <!-- Optional: als Shortcut Icon für ältere Browser -->
 </head>
 
 <body>
@@ -17,6 +19,10 @@
 
   <main class="wrapper">
     <div id="loader" class="loader"></div>
+    <div class="product-legend">
+      <div><span class="legend-color in-stock"></span> Auf Lager</div>
+      <div><span class="legend-color out-of-stock"></span> Nicht verfügbar</div>
+    </div>
     <div id="product-container"></div>
   </main>
 
@@ -46,4 +52,5 @@
   </script>
 
 </body>
+
 </html>
