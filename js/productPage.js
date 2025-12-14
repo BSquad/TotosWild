@@ -26,7 +26,7 @@ function buildProductCard(product) {
   const div = CreateProductCardDiv(product);
   const contentDiv = createProductContent(product);
   div.appendChild(contentDiv);
-  const variantControls = createVariantControls(product);
+  const variantControls = createSelectionControls(product);
   div.appendChild(variantControls);
 
   return div;
@@ -52,17 +52,17 @@ function createProductContent(product) {
   return contentDiv;
 }
 
-function createVariantControls(product) {
+function createSelectionControls(product) {
   const controlsDiv = document.createElement("div");
   controlsDiv.className = "cart-controls";
 
-  if (product.stock) {
+  if (product.priceType === "€") {
     product.variants.forEach(variant => {
       controlsDiv.appendChild(createVariantControl(variant, product));
     });
   }
   else {
-    
+    controlsDiv.appendChild(createPositionSelectorButton(product));
   }
 
   return controlsDiv;
@@ -70,14 +70,16 @@ function createVariantControls(product) {
 
 function createVariantControl(variant, product) {
   const variantDiv = document.createElement("div");
-  variantDiv.className = "variant-control-inline";
+  variantDiv.className = "selection-control-inline";
 
   variantDiv.innerHTML = `
-    <div class="variant-text">
-      <span class="variant-label">${variant.amount}:</span>
+    <div class="selection-text">
+      ${variant.amount ? `
+        <span class="variant-label">${variant.amount}:</span>
+      ` : ``}
       <span class="variant-price">${variant.price}${product.priceType}</span>
     </div>
-    <div class="variant-buttons">
+    <div class="selection-buttons">
       <button class="minus-btn" disabled>-</button>
       <span class="variant-count">0</span>
       <button class="plus-btn">+</button>
@@ -117,6 +119,88 @@ function setupVariantButtons(variant, variantDiv) {
     countSpan.textContent = newAmount;
     minusBtn.disabled = newAmount === 0;
   });
+}
+
+function createPositionSelectorButton(product) {
+  const selectionDiv = document.createElement("div");
+  selectionDiv.className = "selection-control-inline";
+
+  const textDiv = document.createElement("div");
+  textDiv.className = "selection-text";
+  textDiv.innerHTML = `
+    <span class="variant-label">${product.variants[0].amount}:</span>
+    <span class="variant-price">${product.variants[0].price}${product.priceType}</span>
+  `;
+
+  const buttonWrapper = document.createElement("div");
+  buttonWrapper.className = "selection-buttons";
+
+  const button = document.createElement("button");
+  button.className = "button-default";
+  button.textContent = "Auswählen";
+  button.addEventListener("click", () => showPositionSelection(product));
+
+  buttonWrapper.appendChild(button);
+
+  selectionDiv.append(textDiv, buttonWrapper);
+
+  return selectionDiv;
+}
+
+
+function showPositionSelection(product) {
+  const overlay = document.createElement("div");
+  overlay.classList.add("popup-overlay");
+
+  const positionsHtml = product.positions.length === 0
+    ? `<p>Keine Auswahl verfügbar.</p>`
+    : product.positions.map((pos, index) => `
+        <div class="position-item">
+          <div>
+            Gewicht: ${pos.weight} kg
+          </div>
+          <button class="button-default select-position-btn" data-index="${index}">
+            Auswählen
+          </button>
+        </div>
+      `).join("");
+
+  overlay.innerHTML = `
+    <div class="overlay-content">
+      <h2>${product.name}</h2>
+      <p>Verfügbare Auswahl:</p>
+
+      <div class="position-list">
+        ${positionsHtml}
+      </div>
+
+      <div style="margin-top:15px; text-align:right;">
+        <button class="button-default" id="cancel-position-btn">
+          Abbrechen
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  overlay.querySelector("#cancel-position-btn")
+    .addEventListener("click", () => overlay.remove());
+
+  overlay.querySelectorAll(".select-position-btn")
+    .forEach(btn => {
+      btn.addEventListener("click", () => {
+        const index = Number(btn.dataset.index);
+        const position = product.positions[index];
+
+        addPositionToCart(product, position);
+        overlay.remove();
+      });
+    });
+}
+
+function addPositionToCart(product, position) {
+  
 }
 
 function showImpressum() {

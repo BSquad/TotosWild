@@ -129,14 +129,14 @@ h2::after {
   gap: 6px;
 }
 
-.variant-control-inline {
+.selection-control-inline {
   display: flex;
   align-items: center;
   gap: 8px;
   justify-content: space-between;
 }
 
-.variant-buttons {
+.selection-buttons {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -168,6 +168,19 @@ h2::after {
 
 .minus-btn {
   background-color: #f44336;  /* rot für entfernen */
+}
+
+.position-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.position-list {
+  max-height: 300px;
+  margin-top: 10px;
 }
 
 .button-default:hover, .plus-btn:hover, .minus-btn:hover {

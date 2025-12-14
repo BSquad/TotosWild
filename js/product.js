@@ -20,7 +20,7 @@ class Product {
     this.variants = [];
     this.positions = [];
 
-    if (data.Menge && data.Preis) this.variants.push(new Variant(this, data.Menge, data.Preis));
+    this.variants.push(new Variant(this, data.Menge, data.Preis));
     if (data.Menge2 && data.Preis2) this.variants.push(new Variant(this, data.Menge2, data.Preis2));
     if (data.Menge3 && data.Preis3) this.variants.push(new Variant(this, data.Menge3, data.Preis3));
   }
