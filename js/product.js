@@ -16,13 +16,25 @@ class Product {
     this.imageName = data.Bild || null;
     this.stock = data.Bestand === "X";
     this.stockAmount = data.BestandMenge;
-    this.priceType = data.Preisart;
+    this.priceType = data.Preisart; // € or €/kg
     this.variants = [];
     this.positions = [];
 
     this.variants.push(new Variant(this, data.Menge, data.Preis));
     if (data.Menge2 && data.Preis2) this.variants.push(new Variant(this, data.Menge2, data.Preis2));
     if (data.Menge3 && data.Preis3) this.variants.push(new Variant(this, data.Menge3, data.Preis3));
+  }
+
+  getPricePerKg() {
+    if (this.priceType !== "€/kg") return null;
+    return this.variants[0]?.price ?? null;
+  }
+
+  calculatePositionPrice(position) {
+    const pricePerKg = this.getPricePerKg();
+    if (pricePerKg == null) return null;
+
+    return position.weight * pricePerKg;
   }
 }
 
@@ -46,6 +58,10 @@ class Position {
     this.productId = data.ProduktID;
     this.weight = data.Gewicht;
   }
+}
+
+function parseNumber(numberStr) {
+  return parseFloat(numberStr.toString().replace(",", "."));
 }
 
 function fillProductsWithPositions(products, positions) {

@@ -1,5 +1,5 @@
-const selectedVariants = new Map();
-const selectedPositions = new Map();
+const selectedVariants = new Map(); // Variant -> amount
+const selectedPositions = new Map(); // Product -> Position Set
 
 function renderProductCategories(container, categories) {
   container.innerHTML = "";
@@ -207,8 +207,8 @@ function showPositionSelection(product) {
 
 function updateSelectionButton(button, product, position) {
   const isSelected =
-    selectedPositions.has(product.id) &&
-    selectedPositions.get(product.id).has(position);
+    selectedPositions.has(product) &&
+    selectedPositions.get(product).has(position);
 
   if (isSelected) {
     button.textContent = "-";
@@ -222,11 +222,11 @@ function updateSelectionButton(button, product, position) {
 }
 
 function togglePositionSelection(product, position) {
-  if (!selectedPositions.has(product.id)) {
-    selectedPositions.set(product.id, new Set());
+  if (!selectedPositions.has(product)) {
+    selectedPositions.set(product, new Set());
   }
 
-  const set = selectedPositions.get(product.id);
+  const set = selectedPositions.get(product);
 
   if (set.has(position)) {
     set.delete(position);
@@ -262,10 +262,22 @@ function showCartForm() {
   overlay.id = "cart-overlay";
   overlay.classList.add("popup-overlay");
 
-  let productList = Array.from(selectedVariants.entries())
+  const variantLines = Array.from(selectedVariants.entries())
     .map(([variant, amount]) => {
-      return `${variant.product.name} ${variant.amount}: ${amount}x ${variant.price}€`;
-    })
+      return `${variant.product.name} ${variant.amount}: ${amount}x${variant.price}€`;
+    });
+
+  const positionLines = Array.from(selectedPositions.entries())
+    .flatMap(([product, positions]) =>
+      Array.from(positions).map(pos => {
+        const totalPrice = (parseNumber(pos.weight) * parseNumber(product.variants[0]?.price)).toFixed(2);
+        const totalPriceStr = totalPrice.replace(".", ",");
+
+        return `${product.name} (${pos.weight}kg): ${totalPriceStr}€`;
+      })
+    );
+
+  const productList = [...variantLines, ...positionLines]
     .join("\n")
     .trim();
 
