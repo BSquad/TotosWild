@@ -10,7 +10,7 @@ class Category {
   }
 }
 
-function buildCategories(categories, products) {
+function fillCategoriesWithProducts(categories, products) {
   const categoryMap = new Map(
     categories.map(c => [c.name, c])
   );
@@ -20,5 +20,5 @@ function buildCategories(categories, products) {
     category.products.push(product);
   }
 
-  return [...categoryMap.values()];
+  return categories;
 }

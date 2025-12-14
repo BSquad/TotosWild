@@ -56,21 +56,26 @@ function createVariantControls(product) {
   const controlsDiv = document.createElement("div");
   controlsDiv.className = "cart-controls";
 
-  product.variants.forEach(variant => {
-    controlsDiv.appendChild(createVariantControl(variant));
-  });
+  if (product.stock) {
+    product.variants.forEach(variant => {
+      controlsDiv.appendChild(createVariantControl(variant, product));
+    });
+  }
+  else {
+    
+  }
 
   return controlsDiv;
 }
 
-function createVariantControl(variant) {
+function createVariantControl(variant, product) {
   const variantDiv = document.createElement("div");
   variantDiv.className = "variant-control-inline";
 
   variantDiv.innerHTML = `
     <div class="variant-text">
       <span class="variant-label">${variant.amount}:</span>
-      <span class="variant-price">${variant.price}</span>
+      <span class="variant-price">${variant.price}${product.priceType}</span>
     </div>
     <div class="variant-buttons">
       <button class="minus-btn" disabled>-</button>
@@ -143,7 +148,7 @@ function showCartForm() {
 
   let productList = Array.from(cart.entries())
     .map(([variant, amount]) => {
-      return `${variant.product.name} ${variant.amount}: ${amount}x ${variant.price}`;
+      return `${variant.product.name} ${variant.amount}: ${amount}x ${variant.price}€`;
     })
     .join("\n")
     .trim();
@@ -197,9 +202,8 @@ async function initializeProductPage() {
   document.getElementById("cart-btn").addEventListener("click", showCartForm);
 
   try {
-    const [products, categoriesEmpty] = await loadProductsAndCategories();
-    const categoriesMap = buildCategories(categoriesEmpty, products);
-    renderProductCategories(container, categoriesMap);
+    const categories = await loadCategories();
+    renderProductCategories(container, categories);
   } catch (ex) {
     container.innerHTML = "<p>Fehler beim Laden der Produkte</p>";
     console.error(ex);
