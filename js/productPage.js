@@ -1,4 +1,5 @@
-const cart = new Map();
+const selectedVariants = new Map();
+const selectedPositions = new Map();
 
 function renderProductCategories(container, categories) {
   container.innerHTML = "";
@@ -97,23 +98,23 @@ function setupVariantButtons(variant, variantDiv) {
   const countSpan = variantDiv.querySelector(".variant-count");
 
   plusBtn.addEventListener("click", () => {
-    const currentAmount = cart.get(variant) || 0;
+    const currentAmount = selectedVariants.get(variant) || 0;
     const newAmount = currentAmount + 1;
-    cart.set(variant, newAmount);
+    selectedVariants.set(variant, newAmount);
     countSpan.textContent = newAmount;
     minusBtn.disabled = false;
   });
 
   minusBtn.addEventListener("click", () => {
-    const currentAmount = cart.get(variant) || 0;
+    const currentAmount = selectedVariants.get(variant) || 0;
     if (currentAmount <= 0) return;
 
     const newAmount = currentAmount - 1;
 
     if (newAmount > 0) {
-      cart.set(variant, newAmount);
+      selectedVariants.set(variant, newAmount);
     } else {
-      cart.delete(variant);
+      selectedVariants.delete(variant);
     }
 
     countSpan.textContent = newAmount;
@@ -128,7 +129,9 @@ function createPositionSelectorButton(product) {
   const textDiv = document.createElement("div");
   textDiv.className = "selection-text";
   textDiv.innerHTML = `
-    <span class="variant-label">${product.variants[0].amount}:</span>
+    ${product.variants[0].amount ? `
+        <span class="variant-label">${product.variants[0].amount}:</span>
+      ` : ``}
     <span class="variant-price">${product.variants[0].price}${product.priceType}</span>
   `;
 
@@ -138,6 +141,11 @@ function createPositionSelectorButton(product) {
   const button = document.createElement("button");
   button.className = "button-default";
   button.textContent = "Auswählen";
+
+  const hasSelections = Array.isArray(product.positions) && product.positions.length > 0;
+
+  button.disabled = !hasSelections;
+
   button.addEventListener("click", () => showPositionSelection(product));
 
   buttonWrapper.appendChild(button);
@@ -152,31 +160,27 @@ function showPositionSelection(product) {
   const overlay = document.createElement("div");
   overlay.classList.add("popup-overlay");
 
-  const positionsHtml = product.positions.length === 0
-    ? `<p>Keine Auswahl verfügbar.</p>`
-    : product.positions.map((pos, index) => `
-        <div class="position-item">
-          <div>
-            Gewicht: ${pos.weight} kg
-          </div>
-          <button class="button-default select-position-btn" data-index="${index}">
-            Auswählen
-          </button>
-        </div>
-      `).join("");
-
   overlay.innerHTML = `
     <div class="overlay-content">
       <h2>${product.name}</h2>
       <p>Verfügbare Auswahl:</p>
 
       <div class="position-list">
-        ${positionsHtml}
+        ${product.positions.map((pos, index) => `
+          <div class="position-item">
+            <div>Gewicht: ${pos.weight} kg</div>
+            <button
+              class="select-position-btn"
+              data-index="${index}">
+              Auswählen
+            </button>
+          </div>
+        `).join("")}
       </div>
 
       <div style="margin-top:15px; text-align:right;">
         <button class="button-default" id="cancel-position-btn">
-          Abbrechen
+          Schließen
         </button>
       </div>
     </div>
@@ -188,19 +192,47 @@ function showPositionSelection(product) {
     .addEventListener("click", () => overlay.remove());
 
   overlay.querySelectorAll(".select-position-btn")
-    .forEach(btn => {
-      btn.addEventListener("click", () => {
-        const index = Number(btn.dataset.index);
-        const position = product.positions[index];
+    .forEach(button => {
+      const index = Number(button.dataset.index);
+      const position = product.positions[index];
 
-        addPositionToCart(product, position);
-        overlay.remove();
+      updateSelectionButton(button, product, position);
+
+      button.addEventListener("click", () => {
+        togglePositionSelection(product, position);
+        updateSelectionButton(button, product, position);
       });
     });
 }
 
-function addPositionToCart(product, position) {
-  
+function updateSelectionButton(button, product, position) {
+  const isSelected =
+    selectedPositions.has(product.id) &&
+    selectedPositions.get(product.id).has(position);
+
+  if (isSelected) {
+    button.textContent = "-";
+    button.classList.add("minus-btn");
+    button.classList.remove("plus-btn");
+  } else {
+    button.textContent = "+";
+    button.classList.add("plus-btn");
+    button.classList.remove("minus-btn");
+  }
+}
+
+function togglePositionSelection(product, position) {
+  if (!selectedPositions.has(product.id)) {
+    selectedPositions.set(product.id, new Set());
+  }
+
+  const set = selectedPositions.get(product.id);
+
+  if (set.has(position)) {
+    set.delete(position);
+  } else {
+    set.add(position);
+  }
 }
 
 function showImpressum() {
@@ -230,7 +262,7 @@ function showCartForm() {
   overlay.id = "cart-overlay";
   overlay.classList.add("popup-overlay");
 
-  let productList = Array.from(cart.entries())
+  let productList = Array.from(selectedVariants.entries())
     .map(([variant, amount]) => {
       return `${variant.product.name} ${variant.amount}: ${amount}x ${variant.price}€`;
     })
