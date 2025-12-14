@@ -262,22 +262,29 @@ function showCartForm() {
   overlay.id = "cart-overlay";
   overlay.classList.add("popup-overlay");
 
+  const formatter = new Intl.NumberFormat("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  let totalOrderPrice = 0;
+
   const variantLines = Array.from(selectedVariants.entries())
     .map(([variant, amount]) => {
-      return `${variant.product.name} ${variant.amount}: ${amount}x${variant.price}€`;
+      const totalPrice = parseNumber(variant.price) * amount;
+      totalOrderPrice += totalPrice;
+
+      return `${variant.product.name} (${variant.amount}): ${amount}x${variant.price}€ = ${formatter.format(totalPrice)}€`;
     });
 
   const positionLines = Array.from(selectedPositions.entries())
     .flatMap(([product, positions]) =>
       Array.from(positions).map(pos => {
-        const totalPrice = (parseNumber(pos.weight) * parseNumber(product.variants[0]?.price)).toFixed(2);
-        const totalPriceStr = totalPrice.replace(".", ",");
+        const totalPrice = (parseNumber(pos.weight) * parseNumber(product.variants[0]?.price));
+        totalOrderPrice += totalPrice;
 
-        return `${product.name} (${pos.weight}kg): ${totalPriceStr}€`;
+        return `${product.name} (${pos.weight}kg): ${formatter.format(totalPrice)}€`;
       })
     );
 
-  const productList = [...variantLines, ...positionLines]
+  let productList = [...variantLines, ...positionLines]
     .join("\n")
     .trim();
 
@@ -285,6 +292,9 @@ function showCartForm() {
 
   if (noProducts) {
     productList = "Keine Produkte im Warenkorb.";
+  }
+  else {
+    productList += `\n\nGesamtpreis: ${formatter.format(totalOrderPrice)}€`;
   }
 
   overlay.innerHTML = `
