@@ -260,40 +260,7 @@ function showCartForm(productMap) {
   overlay.id = "cart-overlay";
   overlay.classList.add("popup-overlay");
 
-  const formatter = new Intl.NumberFormat("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-  let totalOrderPrice = 0;
-
-  const offerLines = Array.from(selectedOffers.entries())
-    .map(([offer, amount]) => {
-      const totalPrice = parseNumber(offer.price) * amount;
-      totalOrderPrice += totalPrice;
-
-      return `${productMap.get(offer.productId).name} (${offer.variant}): ${amount}x${offer.price}€ = ${formatter.format(totalPrice)}€`;
-    });
-
-  const positionLines = Array.from(selectedPositions.entries())
-    .flatMap(([product, positions]) =>
-      Array.from(positions).map(pos => {
-        const totalPrice = (parseNumber(pos.weight) * parseNumber(product.weightPrice));
-        totalOrderPrice += totalPrice;
-
-        return `${product.name} (${pos.weight}kg): ${formatter.format(totalPrice)}€`;
-      })
-    );
-
-  let productList = [...offerLines, ...positionLines]
-    .join("\n")
-    .trim();
-
-  const noProducts = productList === "";
-
-  if (noProducts) {
-    productList = "Keine Produkte im Warenkorb.";
-  }
-  else {
-    productList += `\n\nGesamtpreis: ${formatter.format(totalOrderPrice)}€`;
-  }
+  const { productList, noProducts } = createProductList(productMap);
 
   overlay.innerHTML = `
     <div class="overlay-content">
@@ -319,15 +286,53 @@ function showCartForm(productMap) {
 
   document.body.appendChild(overlay);
   document.getElementById("cancel-btn").addEventListener("click", () => overlay.remove());
-  document.getElementById("cart-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const name = document.getElementById("customer-name").value;
-    const date = document.getElementById("pickup-date").value;
+  document.getElementById("cart-form").addEventListener("submit", createEmailClick(productList, overlay));
+}
 
-    sendTemplateMail(name, date, productList);
+function createEmailClick(productList, overlay) {
+  const name = document.getElementById("customer-name").value;
+  const date = document.getElementById("pickup-date").value;
 
-    overlay.remove();
-  });
+  sendTemplateMail(name, date, productList);
+
+  overlay.remove();
+}
+
+function createProductList(productMap) {
+  const formatter = new Intl.NumberFormat("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  let totalOrderPrice = 0;
+
+  const offerLines = Array.from(selectedOffers.entries())
+    .map(([offer, amount]) => {
+      const totalPrice = parseNumber(offer.price) * amount;
+      totalOrderPrice += totalPrice;
+
+      return `${productMap.get(offer.productId).name} (${offer.variant}): ${amount}x${offer.price}€ = ${formatter.format(totalPrice)}€`;
+    });
+
+  const positionLines = Array.from(selectedPositions.entries())
+    .flatMap(([product, positions]) => Array.from(positions).map(pos => {
+      const totalPrice = (parseNumber(pos.weight) * parseNumber(product.weightPrice));
+      totalOrderPrice += totalPrice;
+
+      return `${product.name} (${pos.weight}kg): ${formatter.format(totalPrice)}€`;
+    })
+    );
+
+  let productList = [...offerLines, ...positionLines]
+    .join("\n")
+    .trim();
+
+  const noProducts = productList === "";
+
+  if (noProducts) {
+    productList = "Keine Produkte im Warenkorb.";
+  }
+  else {
+    productList += `\n\nGesamtpreis: ${formatter.format(totalOrderPrice)}€`;
+  }
+  return { productList, noProducts };
 }
 
 async function initializeProductPage() {
@@ -335,7 +340,7 @@ async function initializeProductPage() {
   loader.classList.remove("hidden");
   const container = document.getElementById("product-container");
   document.getElementById("impressum-btn").addEventListener("click", showImpressum);
-  
+
   try {
     const [categories, productMap] = await loadCategories();
     document.getElementById("cart-btn").addEventListener("click", () => showCartForm(productMap));
