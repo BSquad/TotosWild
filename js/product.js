@@ -5,7 +5,9 @@ class Product {
   imageName;
   stock;
   stockAmount;
-  variants;
+  offers;
+  weightRange;
+  basePrice;
   priceType;
   positions;
 
@@ -15,38 +17,25 @@ class Product {
     this.category = data.Kategorie;
     this.imageName = data.Bild || null;
     this.stock = data.Bestand === "X";
-    this.stockAmount = data.BestandMenge;
+    this.weightRange = data.Gewichtsbereich || null;
+    this.weightPrice = data.Kilopreis || 0;
     this.priceType = data.Preisart; // € or €/kg
-    this.variants = [];
+    this.offers = [];
     this.positions = [];
-
-    this.variants.push(new Variant(this, data.Menge, data.Preis));
-    if (data.Menge2 && data.Preis2) this.variants.push(new Variant(this, data.Menge2, data.Preis2));
-    if (data.Menge3 && data.Preis3) this.variants.push(new Variant(this, data.Menge3, data.Preis3));
-  }
-
-  getPricePerKg() {
-    if (this.priceType !== "€/kg") return null;
-    return this.variants[0]?.price ?? null;
-  }
-
-  calculatePositionPrice(position) {
-    const pricePerKg = this.getPricePerKg();
-    if (pricePerKg == null) return null;
-
-    return position.weight * pricePerKg;
   }
 }
 
-class Variant {
-  product;
-  amount;
+class Offer {
+  productId;
+  variant;
   price;
+  amount;
 
-  constructor(product, amount, price) {
-    this.product = product;
-    this.amount = amount;
-    this.price = price;
+  constructor(data) {
+    this.productId = data.ProduktID;
+    this.variant = data.Variante;
+    this.price = data.Preis;
+    this.amount = data.Anzahl;
   }
 }
 
@@ -75,4 +64,23 @@ function fillProductsWithPositions(products, positions) {
   }
 
   return products;
+}
+
+function fillProductsWithOffers(products, offers) {
+  const productMap = new Map(
+    products.map(p => [p.id, p])
+  );
+
+  for (const offer of offers) {
+    const product = productMap.get(offer.productId);
+    product.offers.push(offer);
+  }
+
+  return products;
+}
+
+function fillProducts(products, offers, positions) {
+  const productsWithPositions = fillProductsWithPositions(products, positions);
+  const productsWithOffersAndPositions = fillProductsWithOffers(productsWithPositions, offers);
+  return productsWithOffersAndPositions;
 }

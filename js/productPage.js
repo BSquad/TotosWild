@@ -1,4 +1,4 @@
-const selectedVariants = new Map(); // Variant -> amount
+const selectedOffers = new Map(); // Offer -> amount
 const selectedPositions = new Map(); // Product -> Position Set
 
 function renderProductCategories(container, categories) {
@@ -27,8 +27,8 @@ function buildProductCard(product) {
   const div = CreateProductCardDiv(product);
   const contentDiv = createProductContent(product);
   div.appendChild(contentDiv);
-  const variantControls = createSelectionControls(product);
-  div.appendChild(variantControls);
+  const selectionControls = createSelectionControls(product);
+  div.appendChild(selectionControls);
 
   return div;
 }
@@ -58,8 +58,8 @@ function createSelectionControls(product) {
   controlsDiv.className = "cart-controls";
 
   if (product.priceType === "€") {
-    product.variants.forEach(variant => {
-      controlsDiv.appendChild(createVariantControl(variant, product));
+    product.offers.forEach(offer => {
+      controlsDiv.appendChild(createOfferSelectionControl(offer, product));
     });
   }
   else {
@@ -69,56 +69,54 @@ function createSelectionControls(product) {
   return controlsDiv;
 }
 
-function createVariantControl(variant, product) {
-  const variantDiv = document.createElement("div");
-  variantDiv.className = "selection-control-inline";
+function createOfferSelectionControl(offer, product) {
+  const offerDiv = document.createElement("div");
+  offerDiv.className = "selection-control-inline";
 
-  variantDiv.innerHTML = `
+  offerDiv.innerHTML = `
     <div class="selection-text">
-      ${variant.amount ? `
-        <span class="variant-label">${variant.amount}:</span>
-      ` : ``}
-      <span class="variant-price">${variant.price}${product.priceType}</span>
+      ${`<span class="offer-label">${offer.variant}:</span>`}
+      <span class="offer-price">${offer.price}${product.priceType}</span>
     </div>
     <div class="selection-buttons">
       <button class="minus-btn" disabled>-</button>
-      <span class="variant-count">0</span>
+      <span class="offer-count">0</span>
       <button class="plus-btn">+</button>
     </div>
   `;
 
-  setupVariantButtons(variant, variantDiv);
+  setupOfferButtons(offer, offerDiv);
 
-  return variantDiv;
+  return offerDiv;
 }
 
-function setupVariantButtons(variant, variantDiv) {
-  const plusBtn = variantDiv.querySelector(".plus-btn");
-  const minusBtn = variantDiv.querySelector(".minus-btn");
-  const countSpan = variantDiv.querySelector(".variant-count");
+function setupOfferButtons(offer, offerDiv) {
+  const plusBtn = offerDiv.querySelector(".plus-btn");
+  const minusBtn = offerDiv.querySelector(".minus-btn");
+  const countSpan = offerDiv.querySelector(".offer-count");
 
   plusBtn.addEventListener("click", () => {
-    const currentAmount = selectedVariants.get(variant) || 0;
+    const currentAmount = selectedOffers.get(offer) || 0;
     const newAmount = currentAmount + 1;
-    selectedVariants.set(variant, newAmount);
+    selectedOffers.set(offer, newAmount);
     countSpan.textContent = newAmount;
     minusBtn.disabled = false;
   });
 
   minusBtn.addEventListener("click", () => {
-    const currentAmount = selectedVariants.get(variant) || 0;
+    const currentAmount = selectedOffers.get(offer) || 0;
     if (currentAmount <= 0) return;
 
     const newAmount = currentAmount - 1;
 
     if (newAmount > 0) {
-      selectedVariants.set(variant, newAmount);
+      selectedOffers.set(offer, newAmount);
     } else {
-      selectedVariants.delete(variant);
+      selectedOffers.delete(offer);
+      minusBtn.disabled = true;
     }
 
     countSpan.textContent = newAmount;
-    minusBtn.disabled = newAmount === 0;
   });
 }
 
@@ -129,10 +127,10 @@ function createPositionSelectorButton(product) {
   const textDiv = document.createElement("div");
   textDiv.className = "selection-text";
   textDiv.innerHTML = `
-    ${product.variants[0].amount ? `
-        <span class="variant-label">${product.variants[0].amount}:</span>
+    ${product.weightRange ? `
+        <span class="offer-label">${product.weightRange}:</span>
       ` : ``}
-    <span class="variant-price">${product.variants[0].price}${product.priceType}</span>
+    <span class="offer-price">${product.weightPrice}${product.priceType}</span>
   `;
 
   const buttonWrapper = document.createElement("div");
@@ -257,7 +255,7 @@ function showImpressum() {
   });
 }
 
-function showCartForm() {
+function showCartForm(productMap) {
   const overlay = document.createElement("div");
   overlay.id = "cart-overlay";
   overlay.classList.add("popup-overlay");
@@ -266,25 +264,25 @@ function showCartForm() {
 
   let totalOrderPrice = 0;
 
-  const variantLines = Array.from(selectedVariants.entries())
-    .map(([variant, amount]) => {
-      const totalPrice = parseNumber(variant.price) * amount;
+  const offerLines = Array.from(selectedOffers.entries())
+    .map(([offer, amount]) => {
+      const totalPrice = parseNumber(offer.price) * amount;
       totalOrderPrice += totalPrice;
 
-      return `${variant.product.name} (${variant.amount}): ${amount}x${variant.price}€ = ${formatter.format(totalPrice)}€`;
+      return `${productMap.get(offer.productId).name} (${offer.variant}): ${amount}x${offer.price}€ = ${formatter.format(totalPrice)}€`;
     });
 
   const positionLines = Array.from(selectedPositions.entries())
     .flatMap(([product, positions]) =>
       Array.from(positions).map(pos => {
-        const totalPrice = (parseNumber(pos.weight) * parseNumber(product.variants[0]?.price));
+        const totalPrice = (parseNumber(pos.weight) * parseNumber(product.weightPrice));
         totalOrderPrice += totalPrice;
 
         return `${product.name} (${pos.weight}kg): ${formatter.format(totalPrice)}€`;
       })
     );
 
-  let productList = [...variantLines, ...positionLines]
+  let productList = [...offerLines, ...positionLines]
     .join("\n")
     .trim();
 
@@ -337,10 +335,10 @@ async function initializeProductPage() {
   loader.classList.remove("hidden");
   const container = document.getElementById("product-container");
   document.getElementById("impressum-btn").addEventListener("click", showImpressum);
-  document.getElementById("cart-btn").addEventListener("click", showCartForm);
-
+  
   try {
-    const categories = await loadCategories();
+    const [categories, productMap] = await loadCategories();
+    document.getElementById("cart-btn").addEventListener("click", () => showCartForm(productMap));
     renderProductCategories(container, categories);
   } catch (ex) {
     container.innerHTML = "<p>Fehler beim Laden der Produkte</p>";
