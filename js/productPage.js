@@ -286,7 +286,7 @@ function showCartForm(productMap) {
 
   document.body.appendChild(overlay);
   document.getElementById("cancel-btn").addEventListener("click", () => overlay.remove());
-  document.getElementById("cart-form").addEventListener("submit", createEmailClick(productList, overlay));
+  document.getElementById("cart-form").addEventListener("submit", () => createEmailClick(productList, overlay));
 }
 
 function createEmailClick(productList, overlay) {
