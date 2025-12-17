@@ -243,7 +243,7 @@ function showImpressum() {
       <p>Thorsten Jahn</p>
       <p>Telefon: 0151/40309056</p>
       <p>E-Mail: toto1977@web.de</p>
-      <p>Abholung in 38315 Werlaburgdorf - Schladen</p>
+      <p>Abholung in Neue Reihe 21 in 38315 Werlaburgdorf - Schladen</p>
       <p>oder 38667 Bad Harzburg möglich</p>
       <button class="button-default" id="close-overlay">Schließen</button>
     </div>
