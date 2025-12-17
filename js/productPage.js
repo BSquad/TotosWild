@@ -260,24 +260,23 @@ function showCartForm(productMap) {
   overlay.id = "cart-overlay";
   overlay.classList.add("popup-overlay");
 
-  const { productList, noProducts } = createProductList(productMap);
-
   overlay.innerHTML = `
     <div class="overlay-content">
       <h2>Bestellung aufgeben</h2>
       <form id="cart-form">
-        <label for="pickup-date">Abholungsdatum:</label>
+        <label>Abholungsdatum:</label>
         <input type="date" id="pickup-date" required>
 
-        <label for="customer-name">Name:</label>
+        <label>Name:</label>
         <input type="text" id="customer-name" placeholder="Dein Name" required>
 
-        <label for="product-list">Produkte:</label>
-        <textarea id="product-list" readonly>${productList}</textarea>
+        <label>Produkte:</label>
+        <div id="cart-items" class="cart-items"></div>
+
+        <div id="cart-total" class="cart-total"></div>
 
         <div style="margin-top:15px; display:flex; gap:10px; justify-content:flex-end;">
-          <button type="submit" class="button-default" ${noProducts ? "disabled" : ""}>Email erstellen</button>
-
+          <button type="submit" id="submit-order-btn" class="button-default">Email erstellen</button>
           <button type="button" class="button-default" id="cancel-btn">Abbrechen</button>
         </div>
       </form>
@@ -285,13 +284,109 @@ function showCartForm(productMap) {
   `;
 
   document.body.appendChild(overlay);
-  document.getElementById("cancel-btn").addEventListener("click", () => overlay.remove());
-  document.getElementById("cart-form").addEventListener("submit", () => createEmailClick(productList, overlay));
+
+  updateSubmitButtonState();
+
+  renderCartItems(productMap);
+
+  document.getElementById("cancel-btn")
+    .addEventListener("click", () => overlay.remove());
+
+  document.getElementById("cart-form")
+    .addEventListener("submit", (e) => {
+      e.preventDefault();
+      createEmailClick(overlay, productMap);
+      overlay.remove();
+    });
 }
 
-function createEmailClick(productList, overlay) {
+function updateSubmitButtonState() {
+  const submitBtn = document.getElementById("submit-order-btn");
+
+  const noProducts =
+    selectedOffers.size === 0 &&
+    selectedPositions.size === 0;
+
+  submitBtn.disabled = noProducts;
+}
+
+function renderCartItems(productMap) {
+  const container = document.getElementById("cart-items");
+  const totalDiv = document.getElementById("cart-total");
+
+  container.innerHTML = "";
+  let total = 0;
+
+  const formatter = new Intl.NumberFormat("de-DE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  for (const [offer, amount] of selectedOffers.entries()) {
+    const product = productMap.get(offer.productId);
+    const price = parseNumber(offer.price) * amount;
+    total += price;
+
+    container.appendChild(
+      createCartRow(
+        `${product.name} (${offer.variant})`,
+        `${amount} × ${offer.price}€`,
+        `${formatter.format(price)}€`,
+        () => {
+          selectedOffers.delete(offer);
+          renderCartItems(productMap);
+        }
+      )
+    );
+  }
+
+  for (const [product, positions] of selectedPositions.entries()) {
+    for (const pos of positions) {
+      const price = parseNumber(pos.weight) * parseNumber(product.weightPrice);
+      total += price;
+
+      container.appendChild(
+        createCartRow(
+          `${product.name}`,
+          `${pos.weight} kg`,
+          `${formatter.format(price)}€`,
+          () => {
+            positions.delete(pos);
+            if (positions.size === 0) selectedPositions.delete(product);
+            renderCartItems(productMap);
+          }
+        )
+      );
+    }
+  }
+
+  updateSubmitButtonState();
+  totalDiv.textContent = container.children.length === 0
+    ? "Keine Produkte ausgewählt."
+    : `Gesamtpreis: ${formatter.format(total)}€`;
+}
+
+function createCartRow(name, info, price, onRemove) {
+  const row = document.createElement("div");
+  row.className = "cart-row";
+
+  row.innerHTML = `
+    <div class="cart-name">${name}</div>
+    <div class="cart-info">${info}</div>
+    <div class="cart-price">${price}</div>
+    <button class="cart-remove">✕</button>
+  `;
+
+  row.querySelector(".cart-remove")
+    .addEventListener("click", onRemove);
+
+  return row;
+}
+
+function createEmailClick(overlay, productMap) {
   const name = document.getElementById("customer-name").value;
   const date = document.getElementById("pickup-date").value;
+  const productList = createProductList(productMap);
 
   sendTemplateMail(name, date, productList);
 
@@ -332,7 +427,8 @@ function createProductList(productMap) {
   else {
     productList += `\n\nGesamtpreis: ${formatter.format(totalOrderPrice)}€`;
   }
-  return { productList, noProducts };
+
+  return productList;
 }
 
 async function initializeProductPage() {
