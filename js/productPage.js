@@ -240,11 +240,30 @@ function showImpressum() {
   overlay.innerHTML = `
     <div class="overlay-content">
       <h2>Impressum</h2>
-      <p>Thorsten Jahn</p>
-      <p>Telefon: 0151/40309056</p>
-      <p>E-Mail: toto1977@web.de</p>
-      <p>Abholung in Neue Reihe 21 in 38315 Werlaburgdorf - Schladen</p>
-      <p>oder 38667 Bad Harzburg möglich</p>
+      <p>
+        Thorsten Jahn<br>
+        Neue Reihe 21<br>
+        38315 Werlaburgdorf<br>
+        Deutschland
+      </p>
+      <p>
+        Telefon: <a href="tel:+4915140309056">0151 40309056</a><br>
+        E-Mail: <a href="mailto:toto1977@web.de">toto1977@web.de</a>
+      </p>
+
+      <p>
+        Privater Direktvermarkter / Hobbyjäger und Imker
+        Gemäß §19 UStG wird keine Umsatzsteuer berechnet.
+      </p>
+
+      <p>
+        Verantwortlich für den Inhalt nach §18 Abs. 2 MStV:
+        Thorsten Jahn (Adresse wie oben)
+      </p>
+
+      <p>
+        Verkauf von Honig/Wildprodukten erfolgt gemäß den geltenden lebensmittelrechtlichen Vorschriften. Nur Abholung nach Vereinbarung.
+      </p>
       <button class="button-default" id="close-overlay">Schließen</button>
     </div>
   `;
