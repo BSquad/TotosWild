@@ -264,6 +264,57 @@ function showImpressum() {
       <p>
         Verkauf von Honig/Wildprodukten erfolgt gemäß den geltenden lebensmittelrechtlichen Vorschriften. Nur Abholung nach Vereinbarung.
       </p>
+
+      <p style="margin-top:20px;">
+        <a href="#" id="open-privacy">Datenschutzerklärung</a>
+      </p>
+
+      <button class="button-default" id="close-overlay">Schließen</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  document.getElementById("close-overlay").addEventListener("click", () => {
+    overlay.remove();
+  });
+  document.getElementById("open-privacy").addEventListener("click", (e) => {
+    e.preventDefault();
+    overlay.remove();
+    showPrivacyPolicy();
+  });
+}
+
+function showPrivacyPolicy() {
+  const overlay = document.createElement("div");
+  overlay.id = "privacy-policy-overlay";
+  overlay.classList.add("popup-overlay");
+  overlay.innerHTML = `
+    <div class="overlay-content">
+      <h2>Datenschutzerklärung</h2>
+
+      <p><strong>1. Verantwortlicher</strong><br>
+      Thorsten Jahn<br>
+      Neue Reihe 21<br>
+      38315 Werlaburgdorf<br>
+      E-Mail: toto1977@web.de</p>
+
+      <p><strong>2. Kontaktaufnahme / Bestellung</strong><br>
+      Wenn Sie per E-Mail oder über den auf der Website bereitgestellten E-Mail-Link Kontakt aufnehmen,
+      werden die von Ihnen übermittelten Daten (z. B. Name, E-Mail-Adresse, Bestellinformationen)
+      ausschließlich zur Bearbeitung Ihrer Anfrage bzw. Bestellung verwendet.</p>
+
+      <p><strong>3. Speicherung und Weitergabe</strong><br>
+      Die Daten werden nicht an Dritte weitergegeben und nur so lange gespeichert,
+      wie dies zur Bearbeitung der Anfrage erforderlich ist.</p>
+
+      <p><strong>4. Server-Logfiles</strong><br>
+      Beim Aufruf der Website werden durch den Hostinganbieter automatisch Informationen
+      in sogenannten Server-Logfiles erhoben. Diese Daten dienen ausschließlich der
+      technischen Bereitstellung und Sicherheit der Website.</p>
+
+      <p><strong>5. Ihre Rechte</strong><br>
+      Sie haben das Recht auf Auskunft über Ihre gespeicherten personenbezogenen Daten
+      sowie auf Berichtigung oder Löschung. Hierzu genügt eine formlose E-Mail.</p>
       <button class="button-default" id="close-overlay">Schließen</button>
     </div>
   `;
