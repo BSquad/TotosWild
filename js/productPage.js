@@ -269,17 +269,16 @@ function showImpressum() {
         <a href="#" id="open-privacy">Datenschutzerklärung</a>
       </p>
 
-      <button class="button-default" id="close-overlay">Schließen</button>
+      <button class="button-default" id="close-impressum-overlay">Schließen</button>
     </div>
   `;
 
   document.body.appendChild(overlay);
-  document.getElementById("close-overlay").addEventListener("click", () => {
+  document.getElementById("close-impressum-overlay").addEventListener("click", () => {
     overlay.remove();
   });
   document.getElementById("open-privacy").addEventListener("click", (e) => {
     e.preventDefault();
-    overlay.remove();
     showPrivacyPolicy();
   });
 }
@@ -315,12 +314,12 @@ function showPrivacyPolicy() {
       <p><strong>5. Ihre Rechte</strong><br>
       Sie haben das Recht auf Auskunft über Ihre gespeicherten personenbezogenen Daten
       sowie auf Berichtigung oder Löschung. Hierzu genügt eine formlose E-Mail.</p>
-      <button class="button-default" id="close-overlay">Schließen</button>
+      <button class="button-default" id="close-privacy-policy-overlay">Schließen</button>
     </div>
   `;
 
   document.body.appendChild(overlay);
-  document.getElementById("close-overlay").addEventListener("click", () => {
+  document.getElementById("close-privacy-policy-overlay").addEventListener("click", () => {
     overlay.remove();
   });
 }
