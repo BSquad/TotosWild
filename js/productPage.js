@@ -36,28 +36,34 @@ function buildProductCard(product) {
 function CreateProductCardDiv(product) {
   const div = document.createElement("div");
   div.className = "product";
-
-  let color = "red";
-  
-  if (product.offers.length > 0) {
-    if (product.offers[0].amount > product.offers[0].threshold) {
-      color = "green";
-    }
-    else if (product.offers[0].amount === 0) {
-      color = "red";
-    }
-    else {
-      color = "yellow";
-    }
-  }
-
-  if (product.positions.length > 0) {
-    color = "green";
-  }
-  
+  const color = determineProductColor(product);
   div.style.borderRight = `8px solid ${color}`;
 
   return div;
+}
+
+function determineProductColor(product) {
+  if (product.positions.length > 0) {
+    return getColor(product.positions.length, 1);
+  }
+  else if (product.offers.length > 0) {
+    const { amount, threshold } = product.offers[0];
+    return getColor(amount, threshold);
+  }
+
+  return "red";
+}
+
+function getColor(amount, threshold) {
+  if (amount >= threshold) {
+    return "green";
+  }
+  else if (amount > 0) {
+    return "yellow";
+  }
+  else {
+    return "red";
+  }
 }
 
 function createProductContent(product) {
