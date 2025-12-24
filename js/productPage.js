@@ -36,7 +36,27 @@ function buildProductCard(product) {
 function CreateProductCardDiv(product) {
   const div = document.createElement("div");
   div.className = "product";
-  div.style.borderRight = `8px solid ${product.stock ? "green" : "red"}`;
+
+  let color = "red";
+  
+  if (product.offers.length > 0) {
+    if (product.offers[0].amount > product.offers[0].threshold) {
+      color = "green";
+    }
+    else if (product.offers[0].amount === 0) {
+      color = "red";
+    }
+    else {
+      color = "yellow";
+    }
+  }
+
+  if (product.positions.length > 0) {
+    color = "green";
+  }
+  
+  div.style.borderRight = `8px solid ${color}`;
+
   return div;
 }
 
@@ -74,7 +94,7 @@ function createOfferSelectionControl(offer, product) {
 
   offerDiv.innerHTML = `
     <div class="selection-text">
-      ${`<span class="offer-label">${offer.variant}:</span>`}
+      <span class="offer-label">${offer.variant}:</span>
       <span class="offer-price">${offer.price}${product.priceType}</span>
     </div>
     <div class="selection-buttons">

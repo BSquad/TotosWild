@@ -274,6 +274,10 @@ footer {
   background-color: green;
 }
 
+.legend-color.low-stock {
+  background-color: yellow;
+}
+
 .legend-color.no-stock {
   background-color: red;
 }

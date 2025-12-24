@@ -3,8 +3,6 @@ class Product {
   name;
   category;
   imageName;
-  stock;
-  stockAmount;
   offers;
   weightRange;
   basePrice;
@@ -16,7 +14,6 @@ class Product {
     this.name = data.Name;
     this.category = data.Kategorie;
     this.imageName = data.Bild || null;
-    this.stock = data.Bestand === "X";
     this.weightRange = data.Gewichtsbereich || null;
     this.weightPrice = data.Kilopreis || 0;
     this.priceType = data.Preisart; // € or €/kg
@@ -30,12 +27,14 @@ class Offer {
   variant;
   price;
   amount;
+  threshold;
 
   constructor(data) {
     this.productId = data.ProduktID;
     this.variant = data.Variante;
     this.price = data.Preis;
     this.amount = data.Anzahl;
+    this.threshold = data.Schwellwert;
   }
 }
 
