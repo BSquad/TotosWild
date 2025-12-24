@@ -18,8 +18,11 @@ async function loadCategories() {
   const productsEmpty = productsRaw.map(d => new Product(d));
   const offers = offersRaw.map(d => new Offer(d));
   const categoriesEmpty = categoriesRaw.map(d => new Category(d));
-  const positions = positionsRaw.map(d => new Position(d));
-  
+  const positions = positionsRaw
+    .filter(d => d.ProduktID != null && d.ProduktID !== "" && d.Gewicht != null && d.Gewicht !== "")
+    .map(d => new Position(d));
+
+
   const products = fillProducts(productsEmpty, offers, positions);
   const categories = fillCategoriesWithProducts(categoriesEmpty, products);
 
