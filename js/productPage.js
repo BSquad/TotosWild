@@ -185,7 +185,7 @@ function showPositionSelection(product) {
       <div class="position-list">
         ${product.positions.map((pos, index) => `
           <div class="position-item">
-            <div>Gewicht: ${pos.weight} kg</div>
+            <div>Gewicht: ${pos.weight}kg, Preis: ${pos.price}€</div>
             <button
               class="select-position-btn"
               data-index="${index}">
@@ -428,14 +428,13 @@ function renderCartItems(productMap) {
 
   for (const [product, positions] of selectedPositions.entries()) {
     for (const pos of positions) {
-      const price = parseNumber(pos.weight) * parseNumber(product.weightPrice);
-      total += price;
+      total += parseNumber(pos.price);
 
       container.appendChild(
         createCartRow(
           `${product.name}`,
           `${pos.weight} kg`,
-          `${formatter.format(price)}€`,
+          `${pos.price}€`,
           () => {
             positions.delete(pos);
             if (positions.size === 0) selectedPositions.delete(product);
@@ -497,10 +496,9 @@ function createProductList(productMap) {
 
   const positionLines = Array.from(selectedPositions.entries())
     .flatMap(([product, positions]) => Array.from(positions).map(pos => {
-      const totalPrice = (parseNumber(pos.weight) * parseNumber(product.weightPrice));
-      totalOrderPrice += totalPrice;
+      totalOrderPrice += parseNumber(pos.price);
 
-      return `${product.name} (${pos.weight}kg): ${formatter.format(totalPrice)}€`;
+      return `${product.name} (${pos.weight}kg): ${pos.price}€`;
     }));
 
   let productList = [...offerLines, ...positionLines]
