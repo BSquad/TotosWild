@@ -345,6 +345,12 @@ footer {
   font-family: inherit;
 }
 
+.popup-overlay textarea {
+  resize: none;
+  height: 100px;
+  background-color: #f7f7f7;
+}
+
 .popup-overlay p {
   margin: 6px 0;
 }

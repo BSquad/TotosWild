@@ -1,5 +1,6 @@
 const selectedOffers = new Map(); // Offer -> amount
 const selectedPositions = new Map(); // Product -> Position Set
+const selectdRequests = new Map(); // Product -> string
 
 function renderProductCategories(container, categories) {
   container.innerHTML = "";
@@ -114,7 +115,7 @@ function setupOfferButtons(offer, offerDiv) {
     selectedOffers.set(offer, newAmount);
     countSpan.textContent = newAmount;
     minusBtn.classList.remove("hidden");
-  }); 
+  });
 
   minusBtn.addEventListener("click", () => {
     const currentAmount = selectedOffers.get(offer) || 0;
@@ -140,20 +141,25 @@ function createPositionSelectorButton(product) {
   const textDiv = document.createElement("div");
   textDiv.className = "selection-text";
   textDiv.innerHTML = `
-    ${product.weightRange 
-      ? `<span class="offer-label">${product.weightRange}:</span>` 
+    ${product.weightRange
+      ? `<span class="offer-label">${product.weightRange}:</span>`
       : ``}
     <span class="offer-price">${product.weightPrice}${product.priceType}</span>
   `;
 
+  const hasSelections = Array.isArray(product.positions) && product.positions.length > 0;
   const buttonWrapper = document.createElement("div");
   buttonWrapper.className = "selection-buttons";
   const button = document.createElement("button");
   button.className = "button-default";
-  button.textContent = "Auswählen";
-  const hasSelections = Array.isArray(product.positions) && product.positions.length > 0;
-  button.disabled = !hasSelections;
-  button.addEventListener("click", () => showPositionSelection(product));
+
+  if (hasSelections) {
+    button.textContent = "Auswählen";
+    button.addEventListener("click", () => showPositionSelection(product));
+  } else {
+    button.textContent = "Anfrage";
+    button.addEventListener("click", () => showRequestForm(product));
+  }
   buttonWrapper.appendChild(button);
   selectionDiv.append(textDiv, buttonWrapper);
 
@@ -244,6 +250,36 @@ function togglePositionSelection(product, position) {
   } else {
     set.add(position);
   }
+}
+
+function showRequestForm(product) {
+  const overlay = document.createElement("div");
+  overlay.id = "request-form-overlay";
+  overlay.classList.add("popup-overlay");
+  overlay.innerHTML = `
+    <div class="overlay-content">
+    <h2>Anfrage</h2>
+    <label>Bemerkung:</label>
+    <textarea id="request-textarea" placeholder="Anzahl, Wünsche, Anmerkungen, etc." required>${selectdRequests.get(product) ?? ""}</textarea>
+    <button class="button-default" id="close-request-form-overlay">Schließen</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  document.getElementById("close-request-form-overlay").addEventListener("click", () => {
+    const requestText = overlay.querySelector("#request-textarea").value;
+
+    if (requestText !== "") {
+      selectdRequests.set(product, requestText);
+    }
+    else {
+      if (selectdRequests.has(product)) {
+        selectdRequests.delete(product)
+      }
+    }
+
+    overlay.remove();
+  });
 }
 
 function showImpressum() {
