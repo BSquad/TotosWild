@@ -152,27 +152,21 @@ function createPositionSelectorButton(product) {
   const textDiv = document.createElement("div");
   textDiv.className = "selection-text";
   textDiv.innerHTML = `
-    ${product.weightRange ? `
-        <span class="offer-label">${product.weightRange}:</span>
-      ` : ``}
+    ${product.weightRange 
+      ? `<span class="offer-label">${product.weightRange}:</span>` 
+      : ``}
     <span class="offer-price">${product.weightPrice}${product.priceType}</span>
   `;
 
   const buttonWrapper = document.createElement("div");
   buttonWrapper.className = "selection-buttons";
-
   const button = document.createElement("button");
   button.className = "button-default";
   button.textContent = "Auswählen";
-
   const hasSelections = Array.isArray(product.positions) && product.positions.length > 0;
-
   button.disabled = !hasSelections;
-
   button.addEventListener("click", () => showPositionSelection(product));
-
   buttonWrapper.appendChild(button);
-
   selectionDiv.append(textDiv, buttonWrapper);
 
   return selectionDiv;
@@ -378,9 +372,7 @@ function showCartForm(productMap) {
   `;
 
   document.body.appendChild(overlay);
-
   updateSubmitButtonState();
-
   renderCartItems(productMap);
 
   document.getElementById("cancel-btn")
@@ -459,7 +451,7 @@ function renderCartItems(productMap) {
     ? "Keine Produkte ausgewählt."
     : `Gesamtpreis: ${formatter.format(total)}€`;
 }
-1
+
 function createCartRow(name, info, price, onRemove) {
   const row = document.createElement("div");
   row.className = "cart-row";
