@@ -36,22 +36,8 @@ function buildProductCard(product) {
 function CreateProductCardDiv(product) {
   const div = document.createElement("div");
   div.className = "product";
-  const color = determineProductColor(product);
-  div.style.borderRight = `8px solid ${color}`;
 
   return div;
-}
-
-function determineProductColor(product) {
-  if (product.positions.length > 0) {
-    return getColor(product.positions.length, 1);
-  }
-  else if (product.offers.length > 0) {
-    const { amount, threshold } = product.offers[0];
-    return getColor(amount, threshold);
-  }
-
-  return "red";
 }
 
 function getColor(amount, threshold) {
@@ -120,13 +106,15 @@ function setupOfferButtons(offer, offerDiv) {
   const minusBtn = offerDiv.querySelector(".minus-btn");
   const countSpan = offerDiv.querySelector(".offer-count");
 
+  plusBtn.style.backgroundColor = getColor(offer.amount, offer.threshold);
+
   plusBtn.addEventListener("click", () => {
     const currentAmount = selectedOffers.get(offer) || 0;
     const newAmount = currentAmount + 1;
     selectedOffers.set(offer, newAmount);
     countSpan.textContent = newAmount;
     minusBtn.classList.remove("hidden");
-  });
+  }); 
 
   minusBtn.addEventListener("click", () => {
     const currentAmount = selectedOffers.get(offer) || 0;
@@ -231,10 +219,12 @@ function updateSelectionButton(button, product, position) {
     button.textContent = "-";
     button.classList.add("minus-btn");
     button.classList.remove("plus-btn");
+    button.style.backgroundColor = "red";
   } else {
     button.textContent = "+";
     button.classList.add("plus-btn");
     button.classList.remove("minus-btn");
+    button.style.backgroundColor = "green";
   }
 }
 
@@ -247,6 +237,10 @@ function togglePositionSelection(product, position) {
 
   if (set.has(position)) {
     set.delete(position);
+
+    if (set.size === 0) {
+      selectedPositions.delete(product);
+    }
   } else {
     set.add(position);
   }

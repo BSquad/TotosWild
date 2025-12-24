@@ -162,12 +162,8 @@ h2::after {
   transition: transform 0.1s;
 }
 
-.plus-btn {
-  background-color: #4caf50;  /* grün für hinzufügen */
-}
-
 .minus-btn {
-  background-color: #f44336;  /* rot für entfernen */
+  background-color: var(--color-accent);
 }
 
 .position-item {
