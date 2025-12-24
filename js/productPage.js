@@ -61,8 +61,7 @@ function createSelectionControls(product) {
     product.offers.forEach(offer => {
       controlsDiv.appendChild(createOfferSelectionControl(offer, product));
     });
-  }
-  else {
+  } else {
     controlsDiv.appendChild(createPositionSelectorButton(product));
   }
 
@@ -79,7 +78,7 @@ function createOfferSelectionControl(offer, product) {
       <span class="offer-price">${offer.price}${product.priceType}</span>
     </div>
     <div class="selection-buttons">
-      <button class="minus-btn" disabled>-</button>
+      <button class="minus-btn hidden">-</button>
       <span class="offer-count">0</span>
       <button class="plus-btn">+</button>
     </div>
@@ -100,7 +99,7 @@ function setupOfferButtons(offer, offerDiv) {
     const newAmount = currentAmount + 1;
     selectedOffers.set(offer, newAmount);
     countSpan.textContent = newAmount;
-    minusBtn.disabled = false;
+    minusBtn.classList.remove("hidden");
   });
 
   minusBtn.addEventListener("click", () => {
@@ -113,7 +112,7 @@ function setupOfferButtons(offer, offerDiv) {
       selectedOffers.set(offer, newAmount);
     } else {
       selectedOffers.delete(offer);
-      minusBtn.disabled = true;
+      minusBtn.classList.add("hidden");
     }
 
     countSpan.textContent = newAmount;
@@ -434,7 +433,7 @@ function renderCartItems(productMap) {
     ? "Keine Produkte ausgewählt."
     : `Gesamtpreis: ${formatter.format(total)}€`;
 }
-
+1
 function createCartRow(name, info, price, onRemove) {
   const row = document.createElement("div");
   row.className = "cart-row";
@@ -463,7 +462,10 @@ function createEmailClick(overlay, productMap) {
 }
 
 function createProductList(productMap) {
-  const formatter = new Intl.NumberFormat("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const formatter = new Intl.NumberFormat("de-DE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 
   let totalOrderPrice = 0;
 
@@ -481,8 +483,7 @@ function createProductList(productMap) {
       totalOrderPrice += totalPrice;
 
       return `${product.name} (${pos.weight}kg): ${formatter.format(totalPrice)}€`;
-    })
-    );
+    }));
 
   let productList = [...offerLines, ...positionLines]
     .join("\n")
@@ -491,9 +492,8 @@ function createProductList(productMap) {
   const noProducts = productList === "";
 
   if (noProducts) {
-    productList = "Keine Produkte im Warenkorb.";
-  }
-  else {
+    productList = "Keine Produkte ausgewählt.";
+  } else {
     productList += `\n\nGesamtpreis: ${formatter.format(totalOrderPrice)}€`;
   }
 

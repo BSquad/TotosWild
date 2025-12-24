@@ -187,7 +187,7 @@ h2::after {
   transform: scale(1.1);       /* kleiner Hover-Effekt */
 }
 
-.button-default:disabled, .plus-btn:disabled, .minus-btn:disabled {
+.button-default:disabled {
   background-color: #ccc;      /* deaktiviert grau */
   cursor: not-allowed;
 }
