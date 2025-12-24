@@ -296,6 +296,8 @@ footer {
 }
 
 .popup-overlay .overlay-content {
+  max-height: 90vh;
+  overflow-y: auto;
   background-color: #fff;
   padding: 20px 30px;
   border-radius: 12px;
@@ -347,6 +349,10 @@ footer {
   font-family: inherit;
 }
 
+.popup-overlay p {
+  margin: 6px 0;
+}
+
 .cart-items {
   max-height: 300px;
   display: flex;
@@ -389,10 +395,6 @@ footer {
   margin-top: 10px;
   text-align: right;
   font-weight: bold;
-}
-
-.popup-overlay p {
-  margin: 6px 0;
 }
 
 .loader {
