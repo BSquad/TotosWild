@@ -1,5 +1,4 @@
 async function fetchTSV(url) {
-  //https://docs.google.com/spreadsheets/d/1dTOeVckrXhczMe1M2IH5WsL817teLYTqHtMI0hLQDto/edit?gid=0#gid=0
   const res = await fetch(url);
   const tsvText = await res.text();
   const lines = tsvText.trim().split("\n");
