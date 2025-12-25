@@ -260,7 +260,7 @@ function showRequestForm(product) {
     <div class="overlay-content">
     <h2>Anfrage</h2>
     <label>Bemerkung:</label>
-    <textarea id="request-textarea" placeholder="Anzahl, Wünsche, Anmerkungen, etc." required>${selectedRequests.get(product) ?? ""}</textarea>
+    <textarea id="request-textarea" placeholder="Anzahl, Gewicht, Wünsche, Anmerkungen, etc." required>${selectedRequests.get(product) ?? ""}</textarea>
     <button class="button-default" id="close-request-form-overlay">Schließen</button>
     </div>
   `;
@@ -421,7 +421,8 @@ function updateSubmitButtonState() {
 
   const noProducts =
     selectedOffers.size === 0 &&
-    selectedPositions.size === 0;
+    selectedPositions.size === 0 &&
+    selectedRequests.size === 0;
 
   submitBtn.disabled = noProducts;
 }
@@ -475,7 +476,14 @@ function renderCartItems(productMap) {
     }
   }
 
+  let requestSeparatorAdded = false;
+
   for (const [product, requestText] of selectedRequests.entries()) {
+    if (!requestSeparatorAdded) {
+      container.appendChild(createRequestSeparator());
+      requestSeparatorAdded = true;
+    }
+
     container.appendChild(
       createRequestEntry(
         product.name,
@@ -494,7 +502,7 @@ function renderCartItems(productMap) {
     : `Gesamtpreis: ${formatter.format(total)}€`;
 }
 
-function truncate(text, maxLength = 30) {
+function truncate(text, maxLength = 40) {
   if (!text) return "";
   return text.length > maxLength
     ? text.slice(0, maxLength) + "…"
@@ -523,15 +531,24 @@ function createRequestEntry(name, requestText, onRemove) {
   entry.className = "request-entry";
 
   entry.innerHTML = `
-    <div class="request-entry-name">${name}</div>
-    <div class="request-entry-info">${requestText}</div>
-    <button class="request-entry-remove">✕</button>
+    <div class="request-entry-text">
+      <div class="request-entry-name">${name}</div>
+      <div class="request-entry-info">${requestText}</div>
+    </div>
+    <button class="cart-remove">✕</button>
   `;
 
-  entry.querySelector(".request-entry-remove")
+  entry.querySelector(".cart-remove")
     .addEventListener("click", onRemove);
 
   return entry;
+}
+
+function createRequestSeparator() {
+  const sep = document.createElement("div");
+  sep.className = "cart-separator";
+  sep.textContent = "Anfragen";
+  return sep;
 }
 
 function createEmailClick(overlay, productMap) {
