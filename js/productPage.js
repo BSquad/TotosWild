@@ -1,6 +1,9 @@
-const selectedOffers = new Map(); // Offer -> amount
-const selectedPositions = new Map(); // Product -> Position Set
-const selectedRequests = new Map(); // Product -> string
+/** @type {Map<Offer, number>} */
+const selectedOffers = new Map();
+/** @type {Map<Product, Set<Position>>} */
+const selectedPositions = new Map();
+/** @type {Map<Product, string>} */
+const selectedRequests = new Map();
 
 function renderProductCategories(container, categories) {
   container.innerHTML = "";
