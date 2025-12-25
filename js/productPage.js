@@ -1,6 +1,6 @@
 const selectedOffers = new Map(); // Offer -> amount
 const selectedPositions = new Map(); // Product -> Position Set
-const selectdRequests = new Map(); // Product -> string
+const selectedRequests = new Map(); // Product -> string
 
 function renderProductCategories(container, categories) {
   container.innerHTML = "";
@@ -260,7 +260,7 @@ function showRequestForm(product) {
     <div class="overlay-content">
     <h2>Anfrage</h2>
     <label>Bemerkung:</label>
-    <textarea id="request-textarea" placeholder="Anzahl, Wünsche, Anmerkungen, etc." required>${selectdRequests.get(product) ?? ""}</textarea>
+    <textarea id="request-textarea" placeholder="Anzahl, Wünsche, Anmerkungen, etc." required>${selectedRequests.get(product) ?? ""}</textarea>
     <button class="button-default" id="close-request-form-overlay">Schließen</button>
     </div>
   `;
@@ -270,11 +270,11 @@ function showRequestForm(product) {
     const requestText = overlay.querySelector("#request-textarea").value;
 
     if (requestText !== "") {
-      selectdRequests.set(product, requestText);
+      selectedRequests.set(product, requestText);
     }
     else {
-      if (selectdRequests.has(product)) {
-        selectdRequests.delete(product)
+      if (selectedRequests.has(product)) {
+        selectedRequests.delete(product)
       }
     }
 
@@ -475,10 +475,30 @@ function renderCartItems(productMap) {
     }
   }
 
+  for (const [product, requestText] of selectedRequests.entries()) {
+    container.appendChild(
+      createRequestEntry(
+        product.name,
+        `Anfrage: ${truncate(requestText)}`,
+        () => {
+          selectedRequests.delete(product);
+          renderCartItems(productMap);
+        }
+      )
+    );
+  }
+
   updateSubmitButtonState();
   totalDiv.textContent = container.children.length === 0
     ? "Keine Produkte ausgewählt."
     : `Gesamtpreis: ${formatter.format(total)}€`;
+}
+
+function truncate(text, maxLength = 30) {
+  if (!text) return "";
+  return text.length > maxLength
+    ? text.slice(0, maxLength) + "…"
+    : text;
 }
 
 function createCartRow(name, info, price, onRemove) {
@@ -498,12 +518,30 @@ function createCartRow(name, info, price, onRemove) {
   return row;
 }
 
+function createRequestEntry(name, requestText, onRemove) {
+  const entry = document.createElement("div");
+  entry.className = "request-entry";
+
+  entry.innerHTML = `
+    <div class="request-entry-name">${name}</div>
+    <div class="request-entry-info">${requestText}</div>
+    <button class="request-entry-remove">✕</button>
+  `;
+
+  entry.querySelector(".request-entry-remove")
+    .addEventListener("click", onRemove);
+
+  return entry;
+}
+
 function createEmailClick(overlay, productMap) {
   const name = document.getElementById("customer-name").value;
   const date = document.getElementById("pickup-date").value;
   const productList = createProductList(productMap);
+  const RequestList = createRequestList(productMap)
 
-  sendTemplateMail(name, date, productList);
+  const body = createMailBody(name, date, productList, RequestList);
+  sendTemplateMail(body);
 
   overlay.remove();
 }
@@ -544,6 +582,13 @@ function createProductList(productMap) {
   }
 
   return productList;
+}
+
+function createRequestList(productMap) {
+  return Array.from(selectedRequests.entries())
+    .map(([product, request]) => {
+      return `${product.name}: ${request}`;
+    });
 }
 
 async function initializeProductPage() {
