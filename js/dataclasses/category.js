@@ -1,6 +1,9 @@
 class Category {
+  /** @type {string} */
   name;
+  /** @type {string} */
   description;
+  /** @type {[Product]} */
   products;
 
   constructor(data) {

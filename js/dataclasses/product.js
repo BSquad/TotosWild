@@ -1,12 +1,21 @@
 class Product {
+  /** @type {number} */
   id;
+  /** @type {string} */
   name;
+  /** @type {string} */
   category;
+  /** @type {string} */
   imageName;
+  /** @type {[Offer]} */
   offers;
+  /** @type {string} */
   weightRange;
+  /** @type {string} */
   basePrice;
+  /** @type {string} */
   priceType;
+  /** @type {[Position]} */
   positions;
 
   constructor(data) {

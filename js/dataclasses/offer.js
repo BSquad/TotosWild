@@ -1,8 +1,13 @@
 class Offer {
+  /** @type {number} */
   productId;
+  /** @type {string} */
   variant;
+  /** @type {string} */
   price;
+  /** @type {number} */
   amount;
+  /** @type {number} */
   threshold;
 
   constructor(data) {
