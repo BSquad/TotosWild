@@ -121,6 +121,8 @@ h2::after {
   object-fit: cover;
   border-radius: 8px;
   box-shadow: 0 2px 6px var(--shadow-img);
+  margin-bottom: 4px;
+  margin-right: 4px;
 }
 
 .cart-controls {
@@ -353,6 +355,15 @@ footer {
 
 .popup-overlay p {
   margin: 6px 0;
+}
+
+.popup-overlay img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  border-radius: 6px;
 }
 
 .cart-items {

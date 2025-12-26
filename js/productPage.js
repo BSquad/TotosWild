@@ -59,14 +59,52 @@ function getColor(amount, threshold) {
 function createProductContent(product) {
   const contentDiv = document.createElement("div");
   contentDiv.className = "product-content";
-  const imgHtml = product.imageName ? `<img class="product-img" src="images/${product.imageName}">` : "";
-  contentDiv.innerHTML = `
-    <div class="product-text">
-      <div class="name">${product.name}</div>
-    </div>
-    ${imgHtml}
-  `;
+
+  const textDiv = document.createElement("div");
+  textDiv.className = "product-text";
+  textDiv.innerHTML = `<div class="name">${product.name}</div>`;
+
+  contentDiv.appendChild(textDiv);
+
+  if (product.imageName) {
+    const img = document.createElement("img");
+    img.className = "product-img";
+    img.src = `images/${product.imageName}`;
+    img.alt = product.name;
+
+    img.addEventListener("click", () => {
+      showImageOverlay(img.src);
+    });
+
+    contentDiv.appendChild(img);
+  }
+
   return contentDiv;
+}
+
+function showImageOverlay(src) {
+  const overlay = document.createElement("div");
+  overlay.id = "image-overlay";
+  overlay.className = "popup-overlay";
+
+  overlay.innerHTML = `
+    <img src="${src}">
+  `;
+
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener("click", () => {
+    overlay.remove();
+    document.body.style.overflow = "";
+  });
+
+  document.addEventListener("keydown", function escHandler(e) {
+    if (e.key === "Escape") {
+      overlay.remove();
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", escHandler);
+    }
+  });
 }
 
 function createSelectionControls(product) {
@@ -258,7 +296,7 @@ function togglePositionSelection(product, position) {
 function showRequestForm(product) {
   const overlay = document.createElement("div");
   overlay.id = "request-form-overlay";
-  overlay.classList.add("popup-overlay");
+  overlay.className = "popup-overlay";
   overlay.innerHTML = `
     <div class="overlay-content">
     <h2>Anfrage</h2>
@@ -288,7 +326,7 @@ function showRequestForm(product) {
 function showImpressum() {
   const overlay = document.createElement("div");
   overlay.id = "impressum-overlay";
-  overlay.classList.add("popup-overlay");
+  overlay.className = "popup-overlay";
   overlay.innerHTML = `
     <div class="overlay-content">
       <h2>Impressum</h2>
@@ -338,7 +376,7 @@ function showImpressum() {
 function showPrivacyPolicy() {
   const overlay = document.createElement("div");
   overlay.id = "privacy-policy-overlay";
-  overlay.classList.add("popup-overlay");
+  overlay.className = "popup-overlay";
   overlay.innerHTML = `
     <div class="overlay-content">
       <h2>Datenschutzerklärung</h2>
@@ -379,7 +417,7 @@ function showPrivacyPolicy() {
 function showCartForm(productMap) {
   const overlay = document.createElement("div");
   overlay.id = "cart-overlay";
-  overlay.classList.add("popup-overlay");
+  overlay.className = "popup-overlay";
 
   overlay.innerHTML = `
     <div class="overlay-content">
