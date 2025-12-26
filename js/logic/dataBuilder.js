@@ -1,33 +1,17 @@
-function fillProductsWithPositions(products, positions) {
-  const productMap = new Map(
-    products.map(p => [p.id, p])
-  );
-
-  for (const position of positions) {
-    const product = productMap.get(position.productId);
-    product.positions.push(position);
-  }
-
-  return products;
-}
-
-function fillProductsWithOffers(products, offers) {
-  const productMap = new Map(
-    products.map(p => [p.id, p])
-  );
+function fillProducts(products, offers, positions) {
+  const productMap = new Map(products.map(p => [p.id, p]));
 
   for (const offer of offers) {
     const product = productMap.get(offer.productId);
-    product.offers.push(offer);
+    if (product) product.offers.push(offer);
+  }
+
+  for (const position of positions) {
+    const product = productMap.get(position.productId);
+    if (product) product.positions.push(position);
   }
 
   return products;
-}
-
-function fillProducts(products, offers, positions) {
-  const productsWithPositions = fillProductsWithPositions(products, positions);
-  const productsWithOffersAndPositions = fillProductsWithOffers(productsWithPositions, offers);
-  return productsWithOffersAndPositions;
 }
 
 function fillCategoriesWithProducts(categories, products) {
