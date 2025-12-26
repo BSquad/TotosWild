@@ -94,19 +94,20 @@ function showImageOverlay(src) {
   `;
 
   document.body.appendChild(overlay);
-  bindCloseEvents(overlay);
+  const closeEvent = createCloseHandler(overlay);
+  bindCloseEvents(overlay, closeEvent);
 }
 
-function bindCloseEvents(overlay, onCloseEvent = null) {
-  if (!onCloseEvent) {
-    onCloseEvent = createCloseHandler(overlay);
-  }
-
+function bindCloseEvents(overlay, onCloseEvent, button = null) {
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) {
       onCloseEvent();
     }
   });
+
+  if (button !== null) {
+    button.addEventListener("click", onCloseEvent);
+  }
 
   escHandler = createEscHandler(onCloseEvent);
   document.addEventListener("keydown", escHandler);
@@ -252,7 +253,7 @@ function showPositionSelection(product) {
       </div>
 
       <div style="margin-top:15px; text-align:right;">
-        <button class="button-default" id="cancel-position-btn">
+        <button class="button-default" id="close-position-btn">
           Schließen
         </button>
       </div>
@@ -261,10 +262,8 @@ function showPositionSelection(product) {
 
   document.body.appendChild(overlay);
   const closeEvent = createCloseHandler(overlay);
-  bindCloseEvents(overlay, closeEvent);
-
-  overlay.querySelector("#cancel-position-btn")
-    .addEventListener("click", closeEvent);
+  const closeButton = overlay.querySelector("#close-position-btn");
+  bindCloseEvents(overlay, closeEvent, closeButton);
 
   overlay.querySelectorAll(".select-position-btn")
     .forEach(button => {
@@ -330,11 +329,9 @@ function showRequestForm(product) {
   `;
 
   document.body.appendChild(overlay);
-  const onCloseEvent = createCloseHandler(overlay, () => saveRequestText(overlay, product))
-  bindCloseEvents(overlay, onCloseEvent);
-  overlay
-    .querySelector("#close-request-form-overlay")
-    .addEventListener("click", onCloseEvent);
+  const closeEvent = createCloseHandler(overlay, () => saveRequestText(overlay, product))
+  const closeButton = overlay.querySelector("#close-request-form-overlay");
+  bindCloseEvents(overlay, closeEvent, closeButton);
 }
 
 function saveRequestText(overlay, product) {
@@ -392,8 +389,8 @@ function showImpressum() {
 
   document.body.appendChild(overlay);
   const closeEvent = createCloseHandler(overlay);
-  bindCloseEvents(overlay, closeEvent);
-  document.getElementById("close-impressum-overlay").addEventListener("click", closeEvent);
+  const closeButton = overlay.querySelector("#close-impressum-overlay");
+  bindCloseEvents(overlay, closeEvent, closeButton);
   document.getElementById("open-privacy").addEventListener("click", (e) => {
     e.preventDefault();
     showPrivacyPolicy();
@@ -437,8 +434,8 @@ function showPrivacyPolicy() {
 
   document.body.appendChild(overlay);
   const closeEvent = createCloseHandler(overlay);
-  bindCloseEvents(overlay, closeEvent);
-  document.getElementById("close-privacy-policy-overlay").addEventListener("click", closeEvent);
+  const closeButton = overlay.querySelector("#close-privacy-policy-overlay");
+  bindCloseEvents(overlay, closeEvent, closeButton);
 }
 
 function showCartForm(productMap) {
@@ -463,7 +460,7 @@ function showCartForm(productMap) {
 
         <div style="margin-top:15px; display:flex; gap:10px; justify-content:flex-end;">
           <button type="submit" id="submit-order-btn" class="button-default">Email erstellen</button>
-          <button type="button" class="button-default" id="cancel-btn">Abbrechen</button>
+          <button type="button" class="button-default" id="close-cart-btn">Abbrechen</button>
         </div>
       </form>
     </div>
@@ -471,11 +468,10 @@ function showCartForm(productMap) {
 
   document.body.appendChild(overlay);
   const closeEvent = createCloseHandler(overlay);
-  bindCloseEvents(overlay, closeEvent);
+  const closeButton = overlay.querySelector("#close-cart-btn");
+  bindCloseEvents(overlay, closeEvent, closeButton);
   updateSubmitButtonState();
   renderCartItems(productMap);
-
-  document.getElementById("cancel-btn").addEventListener("click", closeEvent);
 
   document.getElementById("cart-form")
     .addEventListener("submit", (e) => {
