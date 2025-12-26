@@ -386,7 +386,7 @@ function createEmailClick(overlay, productMap) {
   const name = document.getElementById("customer-name").value;
   const date = document.getElementById("pickup-date").value;
   const productList = createProductList(productMap);
-  const RequestList = createRequestList(productMap)
+  const RequestList = createRequestList()
 
   const body = createMailBody(name, date, productList, RequestList);
   sendTemplateMail(body);

@@ -38,7 +38,7 @@ function createProductList(productMap) {
   return productList;
 }
 
-function createRequestList(productMap) {
+function createRequestList() {
   return Array.from(selectedRequests.entries())
     .map(([product, request]) => {
       return `${product.name}: ${request}`;
