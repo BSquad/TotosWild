@@ -1,88 +1,4 @@
-/** @type {Map<Offer, number>} */
-const selectedOffers = new Map();
-/** @type {Map<Product, Set<Position>>} */
-const selectedPositions = new Map();
-/** @type {Map<Product, string>} */
-const selectedRequests = new Map();
-
 let escHandler;
-
-function renderProductCategories(container, categories) {
-  container.innerHTML = "";
-
-  categories.forEach(cat => {
-    const h2 = document.createElement("h2");
-    h2.textContent = cat.name;
-    container.appendChild(h2);
-
-    if (cat.description) {
-      const infoDiv = document.createElement("div");
-      infoDiv.className = "category-info";
-      infoDiv.innerHTML = cat.description.replace(/\\n/g, "<br>");
-      container.appendChild(infoDiv);
-    }
-
-    cat.products.forEach(p => {
-      const productDiv = buildProductCard(p);
-      container.appendChild(productDiv);
-    });
-  });
-}
-
-function buildProductCard(product) {
-  const div = CreateProductCardDiv(product);
-  const contentDiv = createProductContent(product);
-  div.appendChild(contentDiv);
-  const selectionControls = createSelectionControls(product);
-  div.appendChild(selectionControls);
-
-  return div;
-}
-
-function CreateProductCardDiv(product) {
-  const div = document.createElement("div");
-  div.className = "product";
-
-  return div;
-}
-
-function getColor(amount, threshold) {
-  if (amount >= threshold) {
-    return "green";
-  }
-  else if (amount > 0) {
-    return "yellow";
-  }
-  else {
-    return "red";
-  }
-}
-
-function createProductContent(product) {
-  const contentDiv = document.createElement("div");
-  contentDiv.className = "product-content";
-
-  const textDiv = document.createElement("div");
-  textDiv.className = "product-text";
-  textDiv.innerHTML = `<div class="name">${product.name}</div>`;
-
-  contentDiv.appendChild(textDiv);
-
-  if (product.imageName) {
-    const img = document.createElement("img");
-    img.className = "product-img";
-    img.src = `images/${product.imageName}`;
-    img.alt = product.name;
-
-    img.addEventListener("click", () => {
-      showImageOverlay(img.src);
-    });
-
-    contentDiv.appendChild(img);
-  }
-
-  return contentDiv;
-}
 
 function showImageOverlay(src) {
   const overlay = document.createElement("div");
@@ -128,107 +44,6 @@ function createCloseHandler(overlay, onCloseEvent = null) {
     document.removeEventListener("keydown", escHandler);
   };
 }
-
-function createSelectionControls(product) {
-  const controlsDiv = document.createElement("div");
-  controlsDiv.className = "cart-controls";
-
-  if (product.priceType === "€") {
-    product.offers.forEach(offer => {
-      controlsDiv.appendChild(createOfferSelectionControl(offer, product));
-    });
-  } else {
-    controlsDiv.appendChild(createPositionSelectorButton(product));
-  }
-
-  return controlsDiv;
-}
-
-function createOfferSelectionControl(offer, product) {
-  const offerDiv = document.createElement("div");
-  offerDiv.className = "selection-control-inline";
-
-  offerDiv.innerHTML = `
-    <div class="selection-text">
-      <span class="offer-label">${offer.variant}:</span>
-      <span class="offer-price">${offer.price}${product.priceType}</span>
-    </div>
-    <div class="selection-buttons">
-      <button class="minus-btn hidden">-</button>
-      <span class="offer-count">0</span>
-      <button class="plus-btn">+</button>
-    </div>
-  `;
-
-  setupOfferButtons(offer, offerDiv);
-
-  return offerDiv;
-}
-
-function setupOfferButtons(offer, offerDiv) {
-  const plusBtn = offerDiv.querySelector(".plus-btn");
-  const minusBtn = offerDiv.querySelector(".minus-btn");
-  const countSpan = offerDiv.querySelector(".offer-count");
-
-  plusBtn.style.backgroundColor = getColor(offer.amount, offer.threshold);
-
-  plusBtn.addEventListener("click", () => {
-    const currentAmount = selectedOffers.get(offer) || 0;
-    const newAmount = currentAmount + 1;
-    selectedOffers.set(offer, newAmount);
-    countSpan.textContent = newAmount;
-    minusBtn.classList.remove("hidden");
-  });
-
-  minusBtn.addEventListener("click", () => {
-    const currentAmount = selectedOffers.get(offer) || 0;
-    if (currentAmount <= 0) return;
-
-    const newAmount = currentAmount - 1;
-
-    if (newAmount > 0) {
-      selectedOffers.set(offer, newAmount);
-    } else {
-      selectedOffers.delete(offer);
-      minusBtn.classList.add("hidden");
-    }
-
-    countSpan.textContent = newAmount;
-  });
-}
-
-function createPositionSelectorButton(product) {
-  const selectionDiv = document.createElement("div");
-  selectionDiv.className = "selection-control-inline";
-
-  const textDiv = document.createElement("div");
-  textDiv.className = "selection-text";
-  textDiv.innerHTML = `
-    ${product.weightRange
-      ? `<span class="offer-label">${product.weightRange}:</span>`
-      : ``}
-    <span class="offer-price">${product.weightPrice}${product.priceType}</span>
-  `;
-
-  const hasSelections = Array.isArray(product.positions) && product.positions.length > 0;
-  const buttonWrapper = document.createElement("div");
-  buttonWrapper.className = "selection-buttons";
-  const button = document.createElement("button");
-  button.className = "button-default";
-
-  if (hasSelections) {
-    button.textContent = "Auswählen";
-    button.addEventListener("click", () => showPositionSelection(product));
-  } else {
-    button.textContent = "Anfrage";
-    button.addEventListener("click", () => showRequestForm(product));
-  }
-  buttonWrapper.appendChild(button);
-  selectionDiv.append(textDiv, buttonWrapper);
-
-  return selectionDiv;
-}
-
 
 function showPositionSelection(product) {
   const overlay = document.createElement("div");
@@ -297,24 +112,6 @@ function updateSelectionButton(button, product, position) {
   }
 }
 
-function togglePositionSelection(product, position) {
-  if (!selectedPositions.has(product)) {
-    selectedPositions.set(product, new Set());
-  }
-
-  const set = selectedPositions.get(product);
-
-  if (set.has(position)) {
-    set.delete(position);
-
-    if (set.size === 0) {
-      selectedPositions.delete(product);
-    }
-  } else {
-    set.add(position);
-  }
-}
-
 function showRequestForm(product) {
   const overlay = document.createElement("div");
   overlay.id = "request-form-overlay";
@@ -329,22 +126,9 @@ function showRequestForm(product) {
   `;
 
   document.body.appendChild(overlay);
-  const closeEvent = createCloseHandler(overlay, () => saveRequestText(overlay, product))
+  const closeEvent = createCloseHandler(overlay, () => saveRequestText(overlay.querySelector("#request-textarea").value, product))
   const closeButton = overlay.querySelector("#close-request-form-overlay");
   bindCloseEvents(overlay, closeEvent, closeButton);
-}
-
-function saveRequestText(overlay, product) {
-  const requestText = overlay.querySelector("#request-textarea").value;
-
-  if (requestText !== "") {
-    selectedRequests.set(product, requestText);
-  }
-  else {
-    if (selectedRequests.has(product)) {
-      selectedRequests.delete(product);
-    }
-  }
 }
 
 function showImpressum() {
@@ -483,13 +267,7 @@ function showCartForm(productMap) {
 
 function updateSubmitButtonState() {
   const submitBtn = document.getElementById("submit-order-btn");
-
-  const noProducts =
-    selectedOffers.size === 0 &&
-    selectedPositions.size === 0 &&
-    selectedRequests.size === 0;
-
-  submitBtn.disabled = noProducts;
+  submitBtn.disabled = IsSelectionEmpty();
 }
 
 function renderCartItems(productMap) {
@@ -498,11 +276,6 @@ function renderCartItems(productMap) {
 
   container.innerHTML = "";
   let total = 0;
-
-  const formatter = new Intl.NumberFormat("de-DE", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
 
   for (const [offer, amount] of selectedOffers.entries()) {
     const product = productMap.get(offer.productId);
@@ -567,13 +340,6 @@ function renderCartItems(productMap) {
     : `Gesamtpreis: ${formatter.format(total)}€`;
 }
 
-function truncate(text, maxLength = 40) {
-  if (!text) return "";
-  return text.length > maxLength
-    ? text.slice(0, maxLength) + "…"
-    : text;
-}
-
 function createCartRow(name, info, price, onRemove) {
   const row = document.createElement("div");
   row.className = "cart-row";
@@ -626,67 +392,4 @@ function createEmailClick(overlay, productMap) {
   sendTemplateMail(body);
 
   overlay.remove();
-}
-
-function createProductList(productMap) {
-  const formatter = new Intl.NumberFormat("de-DE", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-
-  let totalOrderPrice = 0;
-
-  const offerLines = Array.from(selectedOffers.entries())
-    .map(([offer, amount]) => {
-      const totalPrice = parseNumber(offer.price) * amount;
-      totalOrderPrice += totalPrice;
-
-      return `${productMap.get(offer.productId).name} (${offer.variant}): ${amount}x${offer.price}€ = ${formatter.format(totalPrice)}€`;
-    });
-
-  const positionLines = Array.from(selectedPositions.entries())
-    .flatMap(([product, positions]) => Array.from(positions).map(pos => {
-      totalOrderPrice += parseNumber(pos.price);
-
-      return `${product.name} (${pos.weight}kg): ${pos.price}€`;
-    }));
-
-  let productList = [...offerLines, ...positionLines]
-    .join("\n")
-    .trim();
-
-  const noProducts = productList === "";
-
-  if (noProducts) {
-    productList = "Keine Produkte ausgewählt.";
-  } else {
-    productList += `\n\nGesamtpreis: ${formatter.format(totalOrderPrice)}€`;
-  }
-
-  return productList;
-}
-
-function createRequestList(productMap) {
-  return Array.from(selectedRequests.entries())
-    .map(([product, request]) => {
-      return `${product.name}: ${request}`;
-    });
-}
-
-async function initializeProductPage() {
-  const loader = document.getElementById("loader");
-  loader.classList.remove("hidden");
-  const container = document.getElementById("product-container");
-  document.getElementById("impressum-btn").addEventListener("click", showImpressum);
-
-  try {
-    const [categories, productMap] = await loadCategories();
-    document.getElementById("cart-btn").addEventListener("click", () => showCartForm(productMap));
-    renderProductCategories(container, categories);
-  } catch (ex) {
-    container.innerHTML = "<p>Fehler beim Laden der Produkte</p>";
-    console.error(ex);
-  } finally {
-    loader.classList.add("hidden");
-  }
 }

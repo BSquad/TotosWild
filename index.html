@@ -63,10 +63,19 @@
     // JS dynamisch laden
     (async () => {
       try {
-        await loadScript("js/product.js");
-        await loadScript("js/category.js");
-        await loadScript("js/api.js");
-        await loadScript("js/productPage.js");
+        await loadScript("js/dataclasses/position.js");
+        await loadScript("js/dataclasses/offer.js");
+        await loadScript("js/dataclasses/product.js");
+        await loadScript("js/dataclasses/category.js");
+        await loadScript("js/utils/parse.js");
+        await loadScript("js/logic/fetch.js");
+        await loadScript("js/logic/mail.js");
+        await loadScript("js/logic/dataBuilder.js");
+        await loadScript("js/logic/dataRepository.js");
+        await loadScript("js/logic/cartLogic.js");
+        await loadScript("js/ui/overlay.js");
+        await loadScript("js/ui/productCard.js");
+        await loadScript("js/ui/productPage.js");
         await loadScript("js/main.js");
       } catch (err) {
         console.error("Fehler beim Laden der Skripte", err);
