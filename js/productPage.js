@@ -5,6 +5,8 @@ const selectedPositions = new Map();
 /** @type {Map<Product, string>} */
 const selectedRequests = new Map();
 
+let escHandler;
+
 function renderProductCategories(container, categories) {
   container.innerHTML = "";
 
@@ -92,19 +94,38 @@ function showImageOverlay(src) {
   `;
 
   document.body.appendChild(overlay);
+  bindCloseEvents(overlay);
+}
 
-  overlay.addEventListener("click", () => {
-    overlay.remove();
-    document.body.style.overflow = "";
-  });
+function bindCloseEvents(overlay, onCloseEvent = null) {
+  if (!onCloseEvent) {
+    onCloseEvent = createCloseHandler(overlay);
+  }
 
-  document.addEventListener("keydown", function escHandler(e) {
-    if (e.key === "Escape") {
-      overlay.remove();
-      document.body.style.overflow = "";
-      document.removeEventListener("keydown", escHandler);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      onCloseEvent();
     }
   });
+
+  escHandler = createEscHandler(onCloseEvent);
+  document.addEventListener("keydown", escHandler);
+}
+
+function createEscHandler(onCloseEvent) {
+  return (e) => {
+    if (e.key === "Escape") {
+      onCloseEvent();
+    }
+  };
+}
+
+function createCloseHandler(overlay, onCloseEvent = null) {
+  return () => {
+    if (onCloseEvent) onCloseEvent();
+    overlay.remove();
+    document.removeEventListener("keydown", escHandler);
+  };
 }
 
 function createSelectionControls(product) {
@@ -239,9 +260,11 @@ function showPositionSelection(product) {
   `;
 
   document.body.appendChild(overlay);
+  const closeEvent = createCloseHandler(overlay);
+  bindCloseEvents(overlay, closeEvent);
 
   overlay.querySelector("#cancel-position-btn")
-    .addEventListener("click", () => overlay.remove());
+    .addEventListener("click", closeEvent);
 
   overlay.querySelectorAll(".select-position-btn")
     .forEach(button => {
@@ -307,20 +330,24 @@ function showRequestForm(product) {
   `;
 
   document.body.appendChild(overlay);
-  document.getElementById("close-request-form-overlay").addEventListener("click", () => {
-    const requestText = overlay.querySelector("#request-textarea").value;
+  const onCloseEvent = createCloseHandler(overlay, () => saveRequestText(overlay, product))
+  bindCloseEvents(overlay, onCloseEvent);
+  overlay
+    .querySelector("#close-request-form-overlay")
+    .addEventListener("click", onCloseEvent);
+}
 
-    if (requestText !== "") {
-      selectedRequests.set(product, requestText);
-    }
-    else {
-      if (selectedRequests.has(product)) {
-        selectedRequests.delete(product)
-      }
-    }
+function saveRequestText(overlay, product) {
+  const requestText = overlay.querySelector("#request-textarea").value;
 
-    overlay.remove();
-  });
+  if (requestText !== "") {
+    selectedRequests.set(product, requestText);
+  }
+  else {
+    if (selectedRequests.has(product)) {
+      selectedRequests.delete(product);
+    }
+  }
 }
 
 function showImpressum() {
@@ -364,9 +391,9 @@ function showImpressum() {
   `;
 
   document.body.appendChild(overlay);
-  document.getElementById("close-impressum-overlay").addEventListener("click", () => {
-    overlay.remove();
-  });
+  const closeEvent = createCloseHandler(overlay);
+  bindCloseEvents(overlay, closeEvent);
+  document.getElementById("close-impressum-overlay").addEventListener("click", closeEvent);
   document.getElementById("open-privacy").addEventListener("click", (e) => {
     e.preventDefault();
     showPrivacyPolicy();
@@ -409,9 +436,9 @@ function showPrivacyPolicy() {
   `;
 
   document.body.appendChild(overlay);
-  document.getElementById("close-privacy-policy-overlay").addEventListener("click", () => {
-    overlay.remove();
-  });
+  const closeEvent = createCloseHandler(overlay);
+  bindCloseEvents(overlay, closeEvent);
+  document.getElementById("close-privacy-policy-overlay").addEventListener("click", closeEvent);
 }
 
 function showCartForm(productMap) {
@@ -443,17 +470,18 @@ function showCartForm(productMap) {
   `;
 
   document.body.appendChild(overlay);
+  const closeEvent = createCloseHandler(overlay);
+  bindCloseEvents(overlay, closeEvent);
   updateSubmitButtonState();
   renderCartItems(productMap);
 
-  document.getElementById("cancel-btn")
-    .addEventListener("click", () => overlay.remove());
+  document.getElementById("cancel-btn").addEventListener("click", closeEvent);
 
   document.getElementById("cart-form")
     .addEventListener("submit", (e) => {
       e.preventDefault();
       createEmailClick(overlay, productMap);
-      overlay.remove();
+      closeEvent();
     });
 }
 
