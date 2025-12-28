@@ -146,7 +146,7 @@ function showImpressum() {
       </p>
       <p>
         Telefon: <a href="tel:+4915140309056">0151 40309056</a><br>
-        E-Mail: <a href="mailto:toto1977@web.de">toto1977@web.de</a>
+        E-Mail: <a href="mailto:totos-wild@web.de">totos-wild@web.de</a>
       </p>
 
       <p>
@@ -193,7 +193,7 @@ function showPrivacyPolicy() {
       Thorsten Jahn<br>
       Neue Reihe 21<br>
       38315 Werlaburgdorf<br>
-      E-Mail: toto1977@web.de</p>
+      E-Mail: totos-wild@web.de</p>
 
       <p><strong>2. Kontaktaufnahme / Bestellung</strong><br>
       Wenn Sie per E-Mail oder über den auf der Website bereitgestellten E-Mail-Link Kontakt aufnehmen,

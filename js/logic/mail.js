@@ -1,6 +1,6 @@
 function sendTemplateMail(body) {
   const subject = encodeURIComponent("Bestellung bei Toto's Wild & Honig");
-  const mailto = `mailto:toto1977@web.de?subject=${subject}&body=${body}`;
+  const mailto = `mailto:totos-wild@web.de?subject=${subject}&body=${body}`;
 
   window.location.href = mailto;
 }
